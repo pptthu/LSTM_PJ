@@ -1,0 +1,5 @@
+scope,split,check,count,detail
+split,train,còn thẻ HTML khác <br /> trong text_clean,7,"ví dụ <i>, </i> — clean_text chỉ bỏ <br />"
+split,test,review trùng nội dung trong split (bản thừa),201,giữ 1 bản; test cố ý không xoá
+split,test,còn thẻ HTML khác <br /> trong text_clean,3,"ví dụ <i>, </i> — clean_text chỉ bỏ <br />"
+global,test,"review trùng nội dung trong test (bản thừa, giữ nguyên)",201,

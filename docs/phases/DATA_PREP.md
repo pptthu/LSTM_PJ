@@ -6,7 +6,7 @@
 - **Detailed Plan**: Header; Goals; Input/Output; How to do it; Detailed plan / gotchas; Verification gates; Links.
 - **References**: [OVERVIEW.md](../OVERVIEW.md), [PURPOSE.md](../PURPOSE.md) §5, §9, [DATA.md](../DATA.md).
 - **Created**: 2026-11-05T11:21:04+07:00
-- **Last Updated**: 2026-11-23T10:02:29+07:00
+- **Last Updated**: 2026-11-23T21:10:00+07:00
 
 ---
 
@@ -16,7 +16,7 @@
 - **Date created:** 2026-11-05
 - **Last updated:** 2026-11-23
 - **Description:** Tải IMDb, làm sạch, loại trùng, chia train/val theo phim, EDA, tạo dữ liệu mẫu.
-- **Status:** To Do
+- **Status:** In Progress — B1–B2 xong (PR #4); B3–B4 làm sau
 - **Owner:** Bảo
 - **Hạn:** T2 23/11 tối — giao `reviews.parquet` cho Đại
 
@@ -63,11 +63,11 @@ Máy Thư đã có sẵn `data/raw/imdb_{train,test}.parquet` (chép từ Lab 3)
 
 ## Verification gates
 
-- [ ] train + val = 25.000 − số trùng đã loại; test = 25.000.
-- [ ] 0 mã phim chung giữa train và val, và giữa train và test.
-- [ ] 0 hash chung giữa train/val và test.
-- [ ] Chạy lại `prepare.py` cho file giống hệt (so hash file).
-- [ ] `python -m pytest` pass.
+- [x] train + val = 25.000 − số trùng đã loại; test = 25.000 — 22.304 + 2.473 = 24.777; test 25.000.
+- [x] 0 mã phim chung giữa train và val, và giữa train và test — sau khi bỏ 2 review train của `tt0406816` (dữ liệu thật có 1 phim lọt cả train và test).
+- [x] 0 hash chung giữa train/val và test — `check_contract` raise nếu khác 0.
+- [x] Chạy lại `prepare.py` cho file giống hệt — sha256 `e6245753…afb7cd` cả 2 lần.
+- [x] `python -m pytest` pass — 32 passed (15 test mới ở `tests/test_prepare.py`).
 
 ## Links
 

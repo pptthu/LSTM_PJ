@@ -50,6 +50,42 @@ aclImdb/
 - Vocab và TF-IDF chỉ fit trên train, không fit trên val/test.
 - Bàn giao cho mô hình: `data/processed/reviews.parquet` (không commit), cột `uid, split, text, text_clean, label, rating, movie_id` (`split` ∈ train/val/test).
 
+**Số cuối cùng** (`python -m src.data.prepare`, 2026-11-23):
+
+| Split | Review | pos | neg | % pos | Phim | Dùng cho |
+| :--- | ---: | ---: | ---: | ---: | ---: | :--- |
+| train | 22.304 | 11.208 | 11.096 | 50,25% | 3.081 | Train + fit vocab/TF-IDF |
+| val | 2.473 | 1.235 | 1.238 | 49,94% | 343 | Chọn epoch, siêu tham số, `C` baseline |
+| test | 25.000 | 12.500 | 12.500 | 50,00% | 3.581 | Chỉ chạy một lần ở phase EVAL |
+| **tổng** | **49.777** | | | | | |
+
+- File: `data/processed/reviews.parquet` (81,2 MB, không commit), sha256 `e6245753b609cfdcfa1c6c57bd8bf4cb07ad80f7c9e47cfa1d703d8136afb7cd`. Chạy lại `prepare` cho file giống hệt từng byte (đã kiểm).
+- Thống kê từng bước (đầu vào, số bỏ theo từng quy tắc, kiểm rò rỉ): `data/processed/prepare_stats.json` và bản commit `experiments/results/data_prep/prepare_stats.json`.
+
+### Hợp đồng dữ liệu (bàn giao cho Đại)
+
+`data/processed/reviews.parquet`, 49.777 dòng, đúng 7 cột theo thứ tự:
+
+| Cột | Kiểu | Nội dung |
+| :--- | :--- | :--- |
+| `uid` | string | `{split}_{pos|neg}_{id}`, duy nhất toàn file, ổn định qua mọi lần chạy |
+| `split` | string | `train` / `val` / `test` — lọc ra từng tập, không cần file phụ |
+| `text` | string | văn bản gốc (còn `<br />`), dùng khi cần hiển thị nguyên văn |
+| `text_clean` | string | đã bỏ `<br />`, gộp khoảng trắng; giữ hoa/thường — **đầu vào cho TF-IDF và tokenizer** |
+| `label` | int64 | 0 = negative (rating ≤ 4), 1 = positive (rating ≥ 7) |
+| `rating` | int64 | 1–4 hoặc 7–10 (không có 5–6) |
+| `movie_id` | string | mã phim `tt...` — dùng để kiểm rò rỉ, không đưa vào mô hình |
+
+```python
+import pandas as pd
+df = pd.read_parquet("data/processed/reviews.parquet")
+train = df[df["split"] == "train"].reset_index(drop=True)
+val   = df[df["split"] == "val"].reset_index(drop=True)
+test  = df[df["split"] == "test"].reset_index(drop=True)   # chỉ dùng ở EVAL
+```
+
+Bất biến đã kiểm bằng code (`src.data.prepare.check_contract`): 0 hash chung giữa train/val và test; 0 `movie_id` chung giữa 3 split; `label` khớp `rating` 100%; không NaN ở `text`/`text_clean`. Test giữ đúng 25.000 review, không sửa một dòng nào.
+
 ## 4. Trùng lặp & rò rỉ
 
 Hash = SHA-1 của văn bản đã làm sạch (bỏ `<br />`, gộp khoảng trắng; **giữ hoa/thường**), hàm `src.data.clean.text_hash` — giống Lab 3 để số đếm khớp Lab 3.
@@ -60,25 +96,106 @@ Hash = SHA-1 của văn bản đã làm sạch (bỏ `<br />`, gộp khoảng tr
 - Trùng trong test: không xoá (test giữ nguyên); ghi số lượng vào bảng.
 - Báo thêm số test khi bỏ các review test trùng với train (so sánh được với Lab 3).
 
-Số đếm thử khi dựng repo (2026-11-23, `python -m src.data.eda`, chưa loại trùng — Bảo kiểm lại và điền bảng): train chính thức có 98 bản thừa, test có 201 bản thừa, **123 review test trùng với train** (khớp README Lab 3), 0 nhóm trùng khác nhãn.
+Số đo thật (2026-11-23, `python -m src.data.prepare`; nguồn: `experiments/results/data_prep/prepare_stats.json`):
 
 | Kiểm tra | Kết quả |
 | :--- | :--- |
-| Review trùng trong train (đã loại) | TBD |
-| Review trùng giữa train và test (đã loại khỏi train) | TBD |
-| Review trùng trong test (chỉ ghi nhận) | TBD |
-| `movie_url` chung giữa train và val | TBD (kỳ vọng 0) |
-| `movie_url` chung giữa train và test | TBD (kỳ vọng 0) |
-| Tỷ lệ nhãn mỗi split | TBD |
+| Review trùng trong train chính thức (đã loại) | **98** — 87 ở phần train + 11 ở phần val |
+| Review trùng giữa train và test (đã loại khỏi train/val) | **123** — 106 ở train + 17 ở val (khớp Lab 3: 123 review test trùng train) |
+| Review trùng trong test (chỉ ghi nhận, giữ nguyên) | **201** bản thừa, 402 review nằm trong nhóm trùng |
+| `movie_id` chung giữa train và val | **0** |
+| `movie_id` chung giữa train và test | **1 phim** (`tt0406816`, "The Guardian"): 2 review train, 23 review test — đã bỏ 2 review train, giữ test |
+| `movie_id` chung giữa val và test | **0** |
+| Hash chung giữa train/val và test sau khi xử lý | **0** |
+| Nhóm trùng khác nhãn (cùng nội dung, khác nhãn) | **0** ở cả 3 split |
+| Tỷ lệ nhãn mỗi split | train 50,25% pos · val 49,94% · test 50,00% |
+| `label` không khớp `rating`, `text` rỗng | **0** |
+
+Ghi chú về phim `tt0406816`: aclImdb tách train/test theo phim, nhưng phim này lọt cả hai phía (2 review train id 12498–12499, 23 review test) — ngoại lệ của dữ liệu, không phải lỗi split. Vì split nhóm theo phim và mô hình không được thấy phim của test, `prepare` bỏ 2 review train này (quy tắc 4 trong `src/data/prepare.py`); test vẫn đủ 25.000.
 
 Ghi lệnh sinh từng số vào [progress/DATA_PREP_STATUS.md](progress/DATA_PREP_STATUS.md).
 
 ## 5. EDA
 
-Chạy `python -m src.data.eda` (hàm lấy từ Lab 3): ghi `experiments/results/eda/*.csv` và 3 hình vào `experiments/plots/eda/` cho **cả train, val, test** (hướng dẫn của cô: thống kê lại trên từng tập đã chia; dùng cột, histogram, không dùng biểu đồ tròn). Mặc định đếm theo **từ**; khi có tokenizer thì truyền `tokenize=` để đếm token. Nội dung:
-- Phân bố nhãn, phân bố `rating`.
-- Độ dài review (số từ): trung bình, trung vị, phân vị 90/95 — dùng để chọn `max_len` mặc định.
-- Từ phổ biến của từng lớp.
+Chạy `python -m src.data.eda` trên **dữ liệu đã loại trùng** `data/processed/reviews.parquet` (B1), không chạy trên dữ liệu gốc. Ghi `experiments/results/eda/*.csv` và 6 hình vào `experiments/plots/eda/` cho **cả train, val, test** (hướng dẫn của cô: thống kê lại trên từng tập đã chia; chỉ dùng cột/histogram, không dùng biểu đồ tròn). Đếm theo **từ** trên `text_clean` (tách theo khoảng trắng); khi có tokenizer thì truyền `tokenize=` để đếm token.
+
+Số dưới đây lấy từ lần chạy 2026-11-23 (`src/data/eda.py`, ~60 s); mọi số đều có file trong `experiments/results/eda/`.
+
+### 5.1 Phân bố dữ liệu và nhãn
+
+| Split | Review | pos | neg | % pos | Phim | Max review/phim |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| train | 22.304 | 11.208 | 11.096 | 50,25% | 3.081 | 30 |
+| val | 2.473 | 1.235 | 1.238 | 49,94% | 343 | 30 |
+| test | 25.000 | 12.500 | 12.500 | 50,00% | 3.581 | 30 |
+
+Phân bố `rating` (`eda_ratings.csv`) — hai đầu thang điểm chiếm ưu thế, không có 5–6:
+
+| rating | 1 | 2 | 3 | 4 | 7 | 8 | 9 | 10 |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| train | 4.502 | 2.034 | 2.150 | 2.410 | 2.258 | 2.690 | 2.024 | 4.236 |
+| val | 526 | 221 | 239 | 252 | 233 | 310 | 223 | 469 |
+| test | 5.022 | 2.302 | 2.541 | 2.635 | 2.307 | 2.850 | 2.344 | 4.999 |
+
+### 5.2 Độ dài review (từ, đã làm sạch)
+
+| Split | mean | median | P90 | P95 | max | >200 từ | >400 từ | >600 từ |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| train | 231,8 | 173 | 455 | 593 | 2.459 | 40,8% | 13,2% | 4,8% |
+| val | 231,3 | 173 | 448 | 589 | 1.832 | 41,7% | 12,6% | 4,8% |
+| test | 226,3 | 170 | 439 | 576 | 2.235 | 39,8% | 12,3% | 4,4% |
+
+Hệ quả cho `max_len` (đếm từ ≈ token): `max_len=200` cắt ~41% review, `400` cắt ~13%, `600` cắt ~5%. Review rất ngắn hiếm: ≤10 từ chỉ 2 review ở train, 0 ở val, 6 ở test (`eda_length_extremes.csv`); review ≥300 từ chiếm ~22% mỗi split.
+
+### 5.3 Từ phổ biến của từng lớp
+
+Bảng đầy đủ: `eda_top_words.csv` (mọi từ) và `eda_top_words_content.csv` (đã bỏ stopword). Top 10 train, đã bỏ stopword:
+
+| # | negative (0) | positive (1) |
+| ---: | :--- | :--- |
+| 1 | movie (21.532) | film (17.956) |
+| 2 | film (16.328) | movie (16.510) |
+| 3 | one (11.175) | one (11.844) |
+| 4 | like (9.718) | like (7.858) |
+| 5 | good (6.461) | good (6.725) |
+| 6 | bad (6.406) | story (5.907) |
+| 7 | time (5.277) | great (5.697) |
+| 8 | see (4.789) | time (5.544) |
+| 9 | story (4.444) | see (5.300) |
+| 10 | people (4.108) | well (5.076) |
+
+Đọc bảng: lớp negative dùng `bad` (6.406) nhiều gần gấp đôi `great`; lớp positive dùng `great/best/love` nổi bật (`best` 3.828, `love` 3.707 trong top 15). `good` xuất hiện nhiều ở **cả hai** lớp — dấu hiệu phủ định/so sánh ("not good") chứ không phải tín hiệu dương thuần. Hai từ `movie`/`film` đứng đầu cả hai lớp → phải nằm trong stopword khi phân tích từ, nhưng vẫn giữ cho mô hình. Hình: `experiments/plots/eda/eda_top_words.png`.
+
+### 5.4 Phủ định
+
+Regex dấu hiệu phủ định: `not|no|never|nothing|none|nor|neither|nobody|without` và `n't` (giữ nguyên như Lab 3; "not"/"no" chiếm >55% dấu hiệu phủ định trong SFU Review corpus — Konstantinova et al. 2012).
+
+| Split | % review lớp 0 có phủ định | % review lớp 1 có phủ định | % toàn split |
+| :--- | ---: | ---: | ---: |
+| train | 93,6% | 85,4% | 89,5% |
+| val | 93,8% | 84,9% | 89,4% |
+| test | 92,9% | 85,3% | 89,1% |
+
+- Dấu hiệu hay gặp nhất (`eda_negation_cues.csv`): `n't` 66.180 lần (39.582 ở lớp 0 / 26.598 lớp 1), `not` 60.489 (32.235/28.254), `no` 25.189 (15.966/9.223), `never` 12.925, `nothing` 8.336.
+- Cụm phủ định hay gặp (`eda_negation_bigrams.csv`): lớp 0 — "not a" 2.075, "not to" 1.397, "not even" 1.322, "don't know" 1.172; lớp 1 — "not a" 1.855, "not only" 1.282, "not to" 1.250.
+- Phủ định có mặt ở ~89% review vì review IMDb rất dài (median 173 từ) — **không** dùng sự có mặt của phủ định làm đặc trưng phân loại; quan trọng là phủ định + từ bị phủ định ("not good" vs "not bad"). Đây là lý do tokenizer của Đại phải giữ `not`, `n't`. Hình: `experiments/plots/eda/eda_negation_share.png`.
+
+### 5.5 Vấn đề chất lượng dữ liệu
+
+`eda_quality_issues.csv` (chỉ ghi các kiểm tra có số > 0):
+
+| Vấn đề | Số lượng | Xử lý |
+| :--- | ---: | :--- |
+| Review trùng nội dung trong train/val | 0 (đã loại ở B1) | — |
+| Review trùng nội dung trong test | 201 bản thừa (394 review nằm trong nhóm trùng) | **Giữ nguyên** theo quy tắc §4; ghi nhận để không diễn giải quá mức chênh lệch test |
+| Hash chung giữa train/val và test | 0 | — |
+| `movie_id` chung giữa các split | 0 (sau khi bỏ 2 review `tt0406816` ở B1) | §4 |
+| `label` không khớp `rating` | 0 | — |
+| `text_clean` rỗng / dưới 3 từ | 0 / 0 | — |
+| Còn thẻ HTML khác `<br />` (`<i>`, `</i>`) | 10 review (7 train, 3 test) | Giữ nguyên — hiếm, tokenizer coi là từ hiếm; ghi ở §9 |
+| Review gốc chứa `<br />` | 58,7% (trung bình 2,3 lần/review) | `clean_text` bỏ ở `text_clean`; hash tính trên `text_clean` |
+
+Hình còn lại: `eda_label_distribution.png`, `eda_length_hist.png`, `eda_length_by_label.png`, `eda_length_extremes.png`.
 
 ## 6. Vocab & GloVe
 
@@ -98,6 +215,14 @@ Chạy `python -m src.data.eda` (hàm lấy từ Lab 3): ghi `experiments/result
 
 Cột: `text`, `label`, `case_type` (+ `rating`, `source_file` với `sample_100.csv`).
 
+### 7.1 Cách chọn `sample_100.csv` (B4, `src/data/sample.py`)
+
+- Nguồn: **chỉ** tập test của `data/processed/reviews.parquet`; không sửa file test, không dùng mẫu để train/chọn siêu tham số.
+- Tất định: `random.Random(42)`, danh sách uid sắp xếp trước khi lấy → chạy lại cho file giống hệt. Bỏ review trùng nội dung với review đã chọn.
+- Đúng 100 dòng, 50 âm / 50 dương. Mỗi lớp 50 review chia theo thứ tự ưu tiên: `rating_4_negative` 12 (âm sát ngưỡng), `rating_7_positive` 12 (dương sát ngưỡng), `negation` 8 ("not/n't" + từ cảm xúc trong 3 từ), `long_review` 10 (≥500 từ ≈ P90 test), `short_review` 5 (≤20 từ), `random` 15.
+- Kết quả lần chạy 2026-11-23: `random` 30, `long_review` 20, `negation` 16, `rating_4_negative` 12, `rating_7_positive` 12, `short_review` 10; rating 4 và 7 có mặt (18 và 16 review). `cột: uid, text, label, case_type, rating, source_file` (`source_file = "test"`; `uid` chính là tên file gốc trong aclImdb, ví dụ `test_neg_12345`).
+- Hạn chế: nhóm `negation` ưu tiên mẫu "not + từ cảm xúc" nên thiên về ca phủ định rõ; mỉa mai/khen chê lẫn lộn **không** được gán nhãn thủ công (không có nhãn vàng) — dùng cho minh hoạ, không dùng để tính metric.
+
 ## 8. Dữ liệu ngoài miền (mở rộng)
 
 Rotten Tomatoes (Hugging Face `rotten_tomatoes`), chỉ đánh giá chéo, không train lại. Lưu ở `data/raw/rotten_tomatoes/` (không commit).
@@ -105,6 +230,7 @@ Rotten Tomatoes (Hugging Face `rotten_tomatoes`), chỉ đánh giá chéo, khôn
 ## 9. Hạn chế
 
 - Chỉ có review cực tính (≤4 hoặc ≥7 sao): mô hình chưa gặp review trung tính.
-- Văn bản có thẻ HTML (`<br />`), cần làm sạch.
+- Văn bản có thẻ HTML (`<br />`), cần làm sạch. `clean_text` chỉ bỏ `<br />` (giữ hash khớp Lab 3); 10 review còn `<i>`/`</i>` trong `text_clean` (§5.5).
+- Test còn 201 bản trùng nội dung (giữ nguyên theo quy tắc §4) → số test có thể lạc quan hơn một chút so với dữ liệu sạch hoàn toàn; không dùng test để chọn mô hình.
 - Review dài bị cắt ở `max_len`, có thể mất câu kết luận.
 - `sample_100.csv` lấy từ test: chỉ để demo, không dùng chọn mô hình.
