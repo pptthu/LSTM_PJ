@@ -6,7 +6,7 @@
 - **Detailed Plan**: §1 Đã làm được; §2 Chưa làm được; §3 Task từng người; §4 File bàn giao; §5 Mốc kiểm tra; §6 Luật chung.
 - **References**: [OVERVIEW.md](OVERVIEW.md) (12 module), [PURPOSE.md](PURPOSE.md) §10, [phases/](phases/).
 - **Created**: 2026-11-23T10:12:39+07:00
-- **Last Updated**: 2026-11-23T10:12:39+07:00
+- **Last Updated**: 2026-11-23T20:05:00+07:00
 
 ---
 
@@ -23,6 +23,7 @@
 | Chạy thử EDA trên dữ liệu thật: 22.499 / 2.501 / 25.000 review; 123 review test trùng train (khớp Lab 3); 0 nhóm trùng khác nhãn | `python -m src.data.eda` (kết quả chạy thử không commit) |
 | Chốt quyết định: split Lab 3; quy tắc loại trùng; chọn checkpoint theo val acc; phần mở rộng chia mức A/B/C; hạn 14:00 T4; báo cáo PDF tiếng Việt + tiếng Anh, notebook tiếng Việt | [DATA.md](DATA.md) §3–§4, [phases/TRAINING.md](phases/TRAINING.md), [OVERVIEW.md](OVERVIEW.md) §2 |
 | Owner + hạn cho từng phase; phần Monitor training trong TRAINING; bảng so sánh + McNemar trong EVAL | `docs/phases/*.md`, `docs/progress/*.md` |
+| B5: baseline M0a/M0b (Bảo) | `python -m src.models.baseline` → M0a val acc 0,4994; M0b `C=10` val acc 0,8985, macro-F1 0,8985, AUC 0,9623; `experiments/results/baseline/`; [EXP_01](experiments/EXP_01_BASELINE.md) |
 
 ## 2. Chưa làm được
 
@@ -50,7 +51,7 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (ghi bằng chứng
 | B2 | Test loại trùng: không còn hash chung giữa train/val và test; test đủ 25.000 | `tests/test_prepare.py` | test pass | T2 tối | B1 | ⬜ |
 | B3 | **EDA** sau khi loại trùng: chạy `src.data.eda`; thêm từ phổ biến từng lớp (cột, không dùng biểu đồ tròn); điền [DATA.md](DATA.md) §3–§5 | `src/data/eda.py` | `experiments/results/eda/`, `experiments/plots/eda/` | T2 tối | B1 | ⬜ |
 | B4 | Chọn 100 review từ test có ca khó (phủ định, dài, rating 4/7) | — | `data/sample/sample_100.csv` | T2 tối | B1 | ⬜ |
-| B5 | Baseline Majority + TF-IDF (1–2 gram) + LR, chọn `C` trên val; lưu dự đoán val/test cùng định dạng §4 | `src/models/baseline.py` | `experiments/results/baseline/` | T2 tối (val); test chạy cùng lúc với Đại ở D8 | B1 | ⬜ |
+| B5 | Baseline Majority + TF-IDF (1–2 gram) + LR, chọn `C` trên val; lưu dự đoán val/test cùng định dạng §4 | `src/models/baseline.py` | `experiments/results/baseline/` | T2 tối (val); test chạy cùng lúc với Đại ở D8 | B1 | ✅ |
 | B6 | Demo Gradio: nhập review → nhãn, xác suất, tô màu từ; đo thời gian trên CPU | `src/predict.py`, `src/demo/app.py` | ảnh chụp demo | T4 25/11 10:00 | D7 (checkpoint), T3 (hàm giải thích) | ⬜ |
 
 ### Đại — Mô hình, huấn luyện, monitor, evaluation

@@ -6,7 +6,7 @@
 - **Detailed Plan**: §1 Quy tắc; §2 Chỉ mục; §3 Bảng kết quả.
 - **References**: [EXPERIMENT_TEMPLATE.md](EXPERIMENT_TEMPLATE.md), [../MODELS.md](../MODELS.md), [../PURPOSE.md](../PURPOSE.md) §6–§7.
 - **Created**: 2026-11-05T11:21:04+07:00
-- **Last Updated**: 2026-11-23T10:00:45+07:00
+- **Last Updated**: 2026-11-23T20:05:00+07:00
 
 ---
 
@@ -21,7 +21,7 @@
 
 | ID | Tiêu đề | Biến thay đổi so với trước | Người | Trạng thái | File |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| EXP-01 | Baseline Majority + TF-IDF + LR | — | Bảo | To Do | `EXP_01_BASELINE.md` |
+| EXP-01 | Baseline Majority + TF-IDF + LR | — | Bảo | Done | `EXP_01_BASELINE.md` |
 | EXP-02 | LSTM | mô hình RNN đầu tiên | Đại | To Do | `EXP_02_LSTM.md` |
 | EXP-03 | GRU | LSTM → GRU | Đại | To Do | `EXP_03_GRU.md` |
 | EXP-04 | BiLSTM | 1 chiều → 2 chiều | Đại | To Do | `EXP_04_BILSTM.md` |
@@ -37,8 +37,8 @@
 
 | Mô hình | Val acc | Test acc | Test macro-F1 | Test ROC-AUC | Tham số | Thời gian train | Inference (ms/review, CPU) | Nguồn |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| M0a Majority | TBD | TBD | TBD | — | 0 | — | — | TBD |
-| M0b TF-IDF + LR | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
+| M0a Majority | 0,4994 | TBD | TBD | — | 0 | — | — | [EXP_01](EXP_01_BASELINE.md) |
+| M0b TF-IDF + LR (`C=10`) | 0,8985 | TBD | TBD | TBD | 398.265 | 4,8 s | 0,0022 | [EXP_01](EXP_01_BASELINE.md) |
 | M1 LSTM | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
 | M2 GRU | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
 | M3 BiLSTM | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |

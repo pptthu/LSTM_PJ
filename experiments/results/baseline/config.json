@@ -1,0 +1,36 @@
+{
+ "text_column": "text_clean",
+ "tfidf": {
+  "ngram_range": [
+   1,
+   2
+  ],
+  "min_df": 2,
+  "sublinear_tf": false,
+  "lowercase": true,
+  "n_features": 398264
+ },
+ "logistic_regression": {
+  "C": 10.0,
+  "solver": "liblinear",
+  "max_iter": 1000,
+  "random_state": 42,
+  "class_weight": null
+ },
+ "c_grid": [
+  0.01,
+  0.1,
+  1.0,
+  10.0
+ ],
+ "sklearn_version": "1.9.1",
+ "selected_C": 10.0,
+ "timing": {
+  "vectorize_s": 9.502,
+  "train_s": 4.832,
+  "inference_ms": 5.498,
+  "inference_ms_per_review": 0.0022
+ },
+ "n_train": 22304,
+ "n_val": 2473
+}
