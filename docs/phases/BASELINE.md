@@ -6,7 +6,7 @@
 - **Detailed Plan**: Header; Goals; Input/Output; How to do it; Detailed plan / gotchas; Verification gates; Links.
 - **References**: [OVERVIEW.md](../OVERVIEW.md), [PURPOSE.md](../PURPOSE.md) §7.
 - **Created**: 2026-11-05T11:21:04+07:00
-- **Last Updated**: 2026-11-23T10:00:45+07:00
+- **Last Updated**: 2026-11-23T21:05:00+07:00
 
 ---
 
@@ -16,7 +16,7 @@
 - **Date created:** 2026-11-05
 - **Last updated:** 2026-11-23
 - **Description:** Dựng mốc sàn và mốc cổ điển mạnh, không dùng deep learning.
-- **Status:** To Do
+- **Status:** Done (val); test ở D8
 - **Owner:** Bảo
 - **Hạn:** T2 23/11 tối
 
@@ -44,9 +44,9 @@
 
 ## Verification gates
 
-- [ ] `metrics.json` có accuracy, precision/recall/F1 từng lớp, macro-F1, ROC-AUC trên val cho M0a và M0b.
-- [ ] M0a val acc ≈ 50%.
-- [ ] Load lại file `.joblib` cho cùng dự đoán.
+- [x] `metrics.json` có accuracy, precision/recall/F1 từng lớp, macro-F1, ROC-AUC trên val cho M0a và M0b — `experiments/results/baseline/metrics.json`.
+- [x] M0a val acc ≈ 50% — thực đo 0,4994.
+- [x] Load lại file `.joblib` cho cùng dự đoán — `joblib.load` + `predict_proba` khớp (đã kiểm khi viết).
 
 ## Links
 
