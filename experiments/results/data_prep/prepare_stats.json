@@ -1,0 +1,57 @@
+{
+ "rule": "trùng trong train/val: giữ 1 bản (uid nhỏ nhất); trùng giữa train/val và test: bỏ bản ở train/val, giữ test; trùng trong test: chỉ đếm",
+ "hash": "sha1(clean_text) — src.data.clean.text_hash",
+ "inputs": {
+  "train": 22499,
+  "val": 2501,
+  "test": 25000
+ },
+ "removed_within_split": {
+  "train": 87,
+  "val": 11
+ },
+ "removed_cross_split": {
+  "train": 106,
+  "val": 17
+ },
+ "removed_movie_leak": {
+  "train": 2,
+  "val": 0,
+  "movie_ids": [
+   "tt0406816"
+  ]
+ },
+ "duplicates_in_test_kept": 201,
+ "label_conflicts_in_duplicate_groups": {
+  "train": 0,
+  "val": 0,
+  "test": 0
+ },
+ "outputs": {
+  "train": 22304,
+  "val": 2473,
+  "test": 25000
+ },
+ "test_unchanged": true,
+ "generated_at": "2026-11-23T10:12:18+00:00",
+ "contract": {
+  "n_rows": 49777,
+  "n_by_split": {
+   "train": 22304,
+   "val": 2473,
+   "test": 25000
+  },
+  "pos_share_by_split": {
+   "test": 0.5,
+   "train": 0.502511,
+   "val": 0.499393
+  },
+  "hash_overlap_trainval_test": 0,
+  "movie_overlap_train_val": 0,
+  "movie_overlap_train_test": 0,
+  "movie_overlap_val_test": 0,
+  "label_rating_conflicts": 0,
+  "empty_text_clean": 0
+ },
+ "output_file": "data/processed/reviews.parquet"
+}
