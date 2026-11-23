@@ -98,6 +98,14 @@ Chạy `python -m src.data.eda` (hàm lấy từ Lab 3): ghi `experiments/result
 
 Cột: `text`, `label`, `case_type` (+ `rating`, `source_file` với `sample_100.csv`).
 
+### 7.1 Cách chọn `sample_100.csv` (B4, `src/data/sample.py`)
+
+- Nguồn: **chỉ** tập test của `data/processed/reviews.parquet`; không sửa file test, không dùng mẫu để train/chọn siêu tham số.
+- Tất định: `random.Random(42)`, danh sách uid sắp xếp trước khi lấy → chạy lại cho file giống hệt. Bỏ review trùng nội dung với review đã chọn.
+- Đúng 100 dòng, 50 âm / 50 dương. Mỗi lớp 50 review chia theo thứ tự ưu tiên: `rating_4_negative` 12 (âm sát ngưỡng), `rating_7_positive` 12 (dương sát ngưỡng), `negation` 8 ("not/n't" + từ cảm xúc trong 3 từ), `long_review` 10 (≥500 từ ≈ P90 test), `short_review` 5 (≤20 từ), `random` 15.
+- Kết quả lần chạy 2026-11-23: `random` 30, `long_review` 20, `negation` 16, `rating_4_negative` 12, `rating_7_positive` 12, `short_review` 10; rating 4 và 7 có mặt (18 và 16 review). `cột: uid, text, label, case_type, rating, source_file` (`source_file = "test"`; `uid` chính là tên file gốc trong aclImdb, ví dụ `test_neg_12345`).
+- Hạn chế: nhóm `negation` ưu tiên mẫu "not + từ cảm xúc" nên thiên về ca phủ định rõ; mỉa mai/khen chê lẫn lộn **không** được gán nhãn thủ công (không có nhãn vàng) — dùng cho minh hoạ, không dùng để tính metric.
+
 ## 8. Dữ liệu ngoài miền (mở rộng)
 
 Rotten Tomatoes (Hugging Face `rotten_tomatoes`), chỉ đánh giá chéo, không train lại. Lưu ở `data/raw/rotten_tomatoes/` (không commit).

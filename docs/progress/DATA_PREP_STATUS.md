@@ -6,7 +6,7 @@
 - **Detailed Plan**: Header; Checklist; Log; Blockers; Decisions; Next step; Links.
 - **References**: [../phases/DATA_PREP.md](../phases/DATA_PREP.md), [../OVERVIEW.md](../OVERVIEW.md).
 - **Created**: 2026-11-05T11:21:04+07:00
-- **Last Updated**: 2026-11-23T10:02:29+07:00
+- **Last Updated**: 2026-11-23T19:40:00+07:00
 
 ---
 
@@ -44,7 +44,10 @@ Chỉ đánh dấu `[x]` khi có bằng chứng (lệnh, đường dẫn output,
 
 ## Next step
 
-- Bắt đầu bước 1 trong [../phases/DATA_PREP.md](../phases/DATA_PREP.md).
+- B4: `python -m src.data.sample` → `data/sample/sample_100.csv`; kiểm bằng `tests/test_sample.py`.
+- B5: baseline (xem [../phases/BASELINE.md](../phases/BASELINE.md)).
+
+- 2026-11-23 (B4, nhánh `feat/data-sample`): `src/data/sample.py` chọn 100 review **chỉ từ test**, tất định (`Random(42)`), 50 âm / 50 dương; nhóm: rating 4 (12), rating 7 (12), phủ định (8/lớp), dài ≥500 từ (10/lớp), ngắn ≤20 từ (5/lớp), ngẫu nhiên phần còn lại. `python -m src.data.sample` ghi `data/sample/sample_100.csv` (cột `uid, text, label, case_type, rating, source_file`); `tests/test_sample.py` 7 test; `python -m pytest` → 24 passed trên nhánh này.
 
 ## Links
 
