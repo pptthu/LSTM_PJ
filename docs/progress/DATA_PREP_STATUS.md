@@ -6,7 +6,7 @@
 - **Detailed Plan**: Header; Checklist; Log; Blockers; Decisions; Next step; Links.
 - **References**: [../phases/DATA_PREP.md](../phases/DATA_PREP.md), [../OVERVIEW.md](../OVERVIEW.md).
 - **Created**: 2026-11-05T11:21:04+07:00
-- **Last Updated**: 2026-11-23T10:02:29+07:00
+- **Last Updated**: 2026-11-23T19:05:00+07:00
 
 ---
 
@@ -15,7 +15,7 @@
 - **Title:** Chuẩn bị dữ liệu & split
 - **Date created:** 2026-11-05
 - **Last updated:** 2026-11-23
-- **Status:** To Do
+- **Status:** Done
 - **Owner:** Bảo
 - **Hạn:** T2 23/11 tối — giao `reviews.parquet` cho Đại
 - **Phase doc:** [../phases/DATA_PREP.md](../phases/DATA_PREP.md)
@@ -44,7 +44,10 @@ Chỉ đánh dấu `[x]` khi có bằng chứng (lệnh, đường dẫn output,
 
 ## Next step
 
-- Bắt đầu bước 1 trong [../phases/DATA_PREP.md](../phases/DATA_PREP.md).
+- B4: `data/sample/sample_100.csv`; B5: baseline (xem [../phases/BASELINE.md](../phases/BASELINE.md)).
+
+- 2026-11-23 (B3, nhánh `feat/data-eda`): thêm vào `src/data/eda.py` phần từ phổ biến từng lớp (có/không stopword), phủ định (tỷ lệ theo split × nhãn, dấu hiệu, cụm 2 từ), ca biên (≤10 từ, ≥300 từ), kiểm chất lượng. `main` đọc `data/processed/reviews.parquet` thay vì dữ liệu gốc. `python -m src.data.eda` (~60 s) ghi 8 CSV + 6 hình vào `experiments/results/eda/`, `experiments/plots/eda/`; số điền vào DATA.md §5. `python -m pytest` → 24 passed trên nhánh này (chưa có test của B1–B2; sau khi merge PR #4 là 39).
+- 2026-11-23 (B3, kiểm): 0 review trùng trong train/val, test còn 201 bản thừa (giữ theo quy tắc), 0 hash/movie chung giữa split, 0 nhãn sai; 10 review còn `<i>`; 58,7% review gốc có `<br />`.
 
 ## Links
 
