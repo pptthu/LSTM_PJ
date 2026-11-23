@@ -16,7 +16,7 @@
 - **Date created:** 2026-11-05
 - **Last updated:** 2026-11-23
 - **Description:** Tải IMDb, làm sạch, loại trùng, chia train/val theo phim, EDA, tạo dữ liệu mẫu.
-- **Status:** Done (B1–B2 ở PR #4; B3–B4 ở PR #5–#6)
+- **Status:** In Progress — B1–B2 xong (PR #4); B3–B4 làm sau
 - **Owner:** Bảo
 - **Hạn:** T2 23/11 tối — giao `reviews.parquet` cho Đại
 
