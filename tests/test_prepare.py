@@ -9,6 +9,7 @@ from src.data.prepare import (
     COLUMNS,
     build_processed,
     check_contract,
+    committed_stats,
     prepare_dataset,
     remove_duplicates,
 )
@@ -144,6 +145,34 @@ def test_check_contract_detects_leakage():
         build_processed(parts)
 
 
+def test_check_contract_rejects_movie_leak_between_splits():
+    parts = {
+        "train": frame([("train_pos_1", "train", "a", 1, 9, "tt0406816")]),
+        "val": EMPTY,
+        "test": frame([("test_pos_1", "test", "b", 1, 9, "tt0406816")]),
+    }
+    with pytest.raises(ValueError, match="movie_id shared between splits"):
+        build_processed(parts)
+
+
+def test_committed_stats_drops_generated_at():
+    stats = {"n": 1, "generated_at": "2026-11-23T00:00:00+00:00"}
+    assert committed_stats(stats) == {"n": 1}
+
+
+def test_content_hash_depends_on_content_not_on_file_bytes():
+    out = build_processed({
+        "train": frame([("t1", "train", "a", 1, 9, "tt1")]),
+        "val": EMPTY,
+        "test": frame([("s1", "test", "b", 1, 8, "tt3")]),
+    })
+    expected = int(pd.util.hash_pandas_object(out, index=False).sum())
+    assert expected == int(pd.util.hash_pandas_object(out.copy(), index=False).sum())
+    changed = out.copy()
+    changed.loc[0, "text"] = "different"
+    assert int(pd.util.hash_pandas_object(changed, index=False).sum()) != expected
+
+
 def test_check_contract_reports_clean_data():
     out = build_processed({
         "train": frame([("t1", "train", "a", 1, 9, "tt1")]),
@@ -181,7 +210,10 @@ def test_prepare_dataset_end_to_end_on_fake_imdb(fake_imdb_root, tmp_path):
     split = make_train_val_split(train_all, seed=0, n_folds=2)
     out_path = tmp_path / "reviews.parquet"
 
-    processed, stats = prepare_dataset(root=fake_imdb_root, split=split, out_path=out_path)
+    results_dir = tmp_path / "results"
+    processed, stats = prepare_dataset(
+        root=fake_imdb_root, split=split, out_path=out_path, results_dir=results_dir
+    )
 
     loaded = pd.read_parquet(out_path)
     pd.testing.assert_frame_equal(loaded, processed)
@@ -197,3 +229,10 @@ def test_prepare_dataset_end_to_end_on_fake_imdb(fake_imdb_root, tmp_path):
     assert not (
         (loaded["split"] == "train") & (loaded["text_clean"] == "Good acting and good plot.")
     ).any()
+    # danh sách uid test trùng train: đúng review "Good acting and good plot." phía test
+    uids_file = results_dir / "test_uids_dup_train.txt"
+    lines = uids_file.read_text(encoding="utf-8").splitlines()
+    assert lines == ["test_pos_1"]
+    assert stats["test_uids_dup_train"]["n"] == 1
+    assert stats["test_uids_dup_train"]["file"].endswith("test_uids_dup_train.txt")
+    assert "content_hash" in stats
