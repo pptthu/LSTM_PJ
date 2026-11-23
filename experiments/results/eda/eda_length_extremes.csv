@@ -1,0 +1,4 @@
+split,n_reviews,n_short,pct_short,n_long,pct_long,min_words,max_words
+train,22304,2,0.009,5056,22.669,10,2459
+val,2473,0,0.0,542,21.917,20,1832
+test,25000,6,0.024,5339,21.356,4,2235
