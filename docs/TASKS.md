@@ -23,14 +23,14 @@
 | Chạy thử EDA trên dữ liệu thật: 22.499 / 2.501 / 25.000 review; 123 review test trùng train (khớp Lab 3); 0 nhóm trùng khác nhãn | `python -m src.data.eda` (kết quả chạy thử không commit) |
 | Chốt quyết định: split Lab 3; quy tắc loại trùng; chọn checkpoint theo val acc; phần mở rộng chia mức A/B/C; hạn 14:00 T4; báo cáo PDF tiếng Việt + tiếng Anh, notebook tiếng Việt | [DATA.md](DATA.md) §3–§4, [phases/TRAINING.md](phases/TRAINING.md), [OVERVIEW.md](OVERVIEW.md) §2 |
 | Owner + hạn cho từng phase; phần Monitor training trong TRAINING; bảng so sánh + McNemar trong EVAL | `docs/phases/*.md`, `docs/progress/*.md` |
+| B1–B2: loại trùng + test (Bảo) | `src/data/prepare.py`, `tests/test_prepare.py`; train 22.499→22.304, val 2.501→2.473, test 25.000; 0 hash/movie chung giữa split; `python -m pytest` → 32 passed; số trong `experiments/results/data_prep/prepare_stats.json` |
 | B3: EDA trên dữ liệu đã loại trùng (Bảo) | `python -m src.data.eda` → 8 CSV + 6 hình trong `experiments/results/eda/`, `experiments/plots/eda/`; DATA.md §5 có số thật (n = 49.777; median 173 từ; phủ định 89,5% review) |
 
 ## 2. Chưa làm được
 
 | Việc | Ai | Ghi chú |
 | :--- | :--- | :--- |
-| `sample_100.csv`; baseline B0/B1; điền nốt DATA.md | Bảo | B4–B5 |
-| Baseline B0, B1 | Bảo | B5 |
+| `sample_100.csv`; baseline B0/B1; điền nốt DATA.md §5 | Bảo | B4–B5 |
 | Tokenizer, vocab, Dataset; `SentimentRNN`; GloVe | Đại | D1–D3 |
 | Vòng train + monitor; pilot; 15 lần chạy chính; mở rộng A/B | Đại | D4–D7 |
 | Chạy test một lần; bảng so sánh; McNemar; file dự đoán | Đại | D8 |

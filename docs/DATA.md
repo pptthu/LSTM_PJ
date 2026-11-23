@@ -50,6 +50,42 @@ aclImdb/
 - Vocab và TF-IDF chỉ fit trên train, không fit trên val/test.
 - Bàn giao cho mô hình: `data/processed/reviews.parquet` (không commit), cột `uid, split, text, text_clean, label, rating, movie_id` (`split` ∈ train/val/test).
 
+**Số cuối cùng** (`python -m src.data.prepare`, 2026-11-23):
+
+| Split | Review | pos | neg | % pos | Phim | Dùng cho |
+| :--- | ---: | ---: | ---: | ---: | ---: | :--- |
+| train | 22.304 | 11.208 | 11.096 | 50,25% | 3.081 | Train + fit vocab/TF-IDF |
+| val | 2.473 | 1.235 | 1.238 | 49,94% | 343 | Chọn epoch, siêu tham số, `C` baseline |
+| test | 25.000 | 12.500 | 12.500 | 50,00% | 3.581 | Chỉ chạy một lần ở phase EVAL |
+| **tổng** | **49.777** | | | | | |
+
+- File: `data/processed/reviews.parquet` (81,2 MB, không commit), sha256 `e6245753b609cfdcfa1c6c57bd8bf4cb07ad80f7c9e47cfa1d703d8136afb7cd`. Chạy lại `prepare` cho file giống hệt từng byte (đã kiểm).
+- Thống kê từng bước (đầu vào, số bỏ theo từng quy tắc, kiểm rò rỉ): `data/processed/prepare_stats.json` và bản commit `experiments/results/data_prep/prepare_stats.json`.
+
+### Hợp đồng dữ liệu (bàn giao cho Đại)
+
+`data/processed/reviews.parquet`, 49.777 dòng, đúng 7 cột theo thứ tự:
+
+| Cột | Kiểu | Nội dung |
+| :--- | :--- | :--- |
+| `uid` | string | `{split}_{pos|neg}_{id}`, duy nhất toàn file, ổn định qua mọi lần chạy |
+| `split` | string | `train` / `val` / `test` — lọc ra từng tập, không cần file phụ |
+| `text` | string | văn bản gốc (còn `<br />`), dùng khi cần hiển thị nguyên văn |
+| `text_clean` | string | đã bỏ `<br />`, gộp khoảng trắng; giữ hoa/thường — **đầu vào cho TF-IDF và tokenizer** |
+| `label` | int64 | 0 = negative (rating ≤ 4), 1 = positive (rating ≥ 7) |
+| `rating` | int64 | 1–4 hoặc 7–10 (không có 5–6) |
+| `movie_id` | string | mã phim `tt...` — dùng để kiểm rò rỉ, không đưa vào mô hình |
+
+```python
+import pandas as pd
+df = pd.read_parquet("data/processed/reviews.parquet")
+train = df[df["split"] == "train"].reset_index(drop=True)
+val   = df[df["split"] == "val"].reset_index(drop=True)
+test  = df[df["split"] == "test"].reset_index(drop=True)   # chỉ dùng ở EVAL
+```
+
+Bất biến đã kiểm bằng code (`src.data.prepare.check_contract`): 0 hash chung giữa train/val và test; 0 `movie_id` chung giữa 3 split; `label` khớp `rating` 100%; không NaN ở `text`/`text_clean`. Test giữ đúng 25.000 review, không sửa một dòng nào.
+
 ## 4. Trùng lặp & rò rỉ
 
 Hash = SHA-1 của văn bản đã làm sạch (bỏ `<br />`, gộp khoảng trắng; **giữ hoa/thường**), hàm `src.data.clean.text_hash` — giống Lab 3 để số đếm khớp Lab 3.
@@ -60,16 +96,22 @@ Hash = SHA-1 của văn bản đã làm sạch (bỏ `<br />`, gộp khoảng tr
 - Trùng trong test: không xoá (test giữ nguyên); ghi số lượng vào bảng.
 - Báo thêm số test khi bỏ các review test trùng với train (so sánh được với Lab 3).
 
-Số đếm thử khi dựng repo (2026-11-23, `python -m src.data.eda`, chưa loại trùng — Bảo kiểm lại và điền bảng): train chính thức có 98 bản thừa, test có 201 bản thừa, **123 review test trùng với train** (khớp README Lab 3), 0 nhóm trùng khác nhãn.
+Số đo thật (2026-11-23, `python -m src.data.prepare`; nguồn: `experiments/results/data_prep/prepare_stats.json`):
 
 | Kiểm tra | Kết quả |
 | :--- | :--- |
-| Review trùng trong train (đã loại) | TBD |
-| Review trùng giữa train và test (đã loại khỏi train) | TBD |
-| Review trùng trong test (chỉ ghi nhận) | TBD |
-| `movie_url` chung giữa train và val | TBD (kỳ vọng 0) |
-| `movie_url` chung giữa train và test | TBD (kỳ vọng 0) |
-| Tỷ lệ nhãn mỗi split | TBD |
+| Review trùng trong train chính thức (đã loại) | **98** — 87 ở phần train + 11 ở phần val |
+| Review trùng giữa train và test (đã loại khỏi train/val) | **123** — 106 ở train + 17 ở val (khớp Lab 3: 123 review test trùng train) |
+| Review trùng trong test (chỉ ghi nhận, giữ nguyên) | **201** bản thừa, 402 review nằm trong nhóm trùng |
+| `movie_id` chung giữa train và val | **0** |
+| `movie_id` chung giữa train và test | **1 phim** (`tt0406816`, "The Guardian"): 2 review train, 23 review test — đã bỏ 2 review train, giữ test |
+| `movie_id` chung giữa val và test | **0** |
+| Hash chung giữa train/val và test sau khi xử lý | **0** |
+| Nhóm trùng khác nhãn (cùng nội dung, khác nhãn) | **0** ở cả 3 split |
+| Tỷ lệ nhãn mỗi split | train 50,25% pos · val 49,94% · test 50,00% |
+| `label` không khớp `rating`, `text` rỗng | **0** |
+
+Ghi chú về phim `tt0406816`: aclImdb tách train/test theo phim, nhưng phim này lọt cả hai phía (2 review train id 12498–12499, 23 review test) — ngoại lệ của dữ liệu, không phải lỗi split. Vì split nhóm theo phim và mô hình không được thấy phim của test, `prepare` bỏ 2 review train này (quy tắc 4 trong `src/data/prepare.py`); test vẫn đủ 25.000.
 
 Ghi lệnh sinh từng số vào [progress/DATA_PREP_STATUS.md](progress/DATA_PREP_STATUS.md).
 
