@@ -202,6 +202,8 @@ Regex dấu hiệu phủ định: `not|no|never|nothing|none|nor|neither|nobody|
 | Còn thẻ HTML khác `<br />` (`<i>`, `</i>`) | 10 review (7 train, 3 test) | Giữ nguyên — hiếm, tokenizer coi là từ hiếm; ghi ở §9 |
 | Review gốc chứa `<br />` | 58,7% (trung bình 2,3 lần/review) | `clean_text` bỏ ở `text_clean`; hash tính trên `text_clean` |
 
+Đã kiểm thêm bằng `quality_issues` (đều **0** trên dữ liệu thật): ô thiếu (NaN) ở `uid`/`text_clean`/`movie_id`; ký tự thay thế `U+FFFD` (lỗi encoding). Số liệu EDA đã được đối chiếu độc lập (tính lại median/P90/P95/% cắt, phủ định, top từ, trùng lặp — khớp 100%) và chạy 2 lần cho CSV giống hệt từng byte.
+
 Hình còn lại: `eda_label_distribution.png`, `eda_length_hist.png`, `eda_length_by_label.png`, `eda_length_extremes.png`.
 
 ## 6. Vocab & GloVe

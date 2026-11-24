@@ -299,9 +299,14 @@ def quality_issues(parts: dict[str, pd.DataFrame]) -> pd.DataFrame:
             rows.append({"scope": scope, "split": split, "check": check, "count": int(count), "detail": detail})
 
     for name, df in parts.items():
-        clean = df["text_clean"] if "text_clean" in df.columns else df["text"].map(clean_text)
+        clean = (df["text_clean"] if "text_clean" in df.columns else df["text"].map(clean_text)).fillna("")
         lens = token_lengths(clean.tolist())
         hashes = df["text"].map(text_hash)
+        required = [c for c in ("uid", "text_clean", "movie_id") if c in df.columns]
+        add("split", name, "ô bị thiếu (NaN) ở cột bắt buộc",
+            int(df[required].isna().any(axis=1).sum()), ", ".join(required))
+        add("split", name, "ký tự thay thế U+FFFD (lỗi encoding)",
+            int(df["text"].str.contains("\ufffd", regex=False).sum()))
         add("split", name, "review trùng nội dung trong split (bản thừa)", int(hashes.duplicated().sum()),
             "giữ 1 bản; test cố ý không xoá")
         add("split", name, "label không khớp rating", int(

@@ -43,6 +43,8 @@ Chỉ đánh dấu `[x]` khi có bằng chứng (lệnh, đường dẫn output,
 
 - 2026-11-24 (fix theo review PR #4, nhánh `fix/data-test-dup-list`): `prepare.py` ghi `experiments/results/data_prep/test_uids_dup_train.txt` (**123 uid** test trùng train, sắp theo uid; số dòng trong `prepare_stats.json`); thêm `content_hash` = **1029824945594009414** (so được giữa các máy, thay cho sha256 file); `check_contract` **raise** khi `movie_id` chung giữa các split; bản commit của `prepare_stats.json` bỏ `generated_at` (chạy lại không làm file đổi). DATA.md §3–§4: ghi rõ content_hash vs sha256, quy tắc 4 "Thư chốt 2026-11-23", train 22.304 khác train Lab 3 22.499 ("cùng split, train đã loại trùng"). `python -m pytest` → **35 passed**.
 
+- 2026-11-24 (B3, cập nhật theo review PR #9): `quality_issues` thêm kiểm ô NaN ở cột bắt buộc và ký tự `U+FFFD` (đều 0 trên dữ liệu thật); test truy cập bảng bằng MultiIndex 3 khoá (`scope, split, check`) — sửa lỗi `ValueError: truth value of a Series is ambiguous` trên pandas 3.0.3 (tái hiện và kiểm lại: 8/8 test EDA pass trên pandas 3.0.3, 43 pass trên pandas 3.1.1). Số EDA đã đối chiếu độc lập (median/P90/P95/% cắt, phủ định, top từ, trùng lặp) và chạy 2 lần cho CSV giống hệt.
+
 ## Blockers
 
 - Chưa có.
