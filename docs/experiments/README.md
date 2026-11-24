@@ -38,7 +38,7 @@
 | Mô hình | Val acc | Test acc | Test macro-F1 | Test ROC-AUC | Tham số | Thời gian train | Inference (ms/review, CPU) | Nguồn |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | M0a Majority | 0,4994 | TBD | TBD | — | 0 | — | — | [EXP_01](EXP_01_BASELINE.md) |
-| M0b TF-IDF + LR (`C=10`) | 0,8985 | TBD | TBD | TBD | 398.265 | 4,8 s | 0,0022 | [EXP_01](EXP_01_BASELINE.md) |
+| M0b TF-IDF + LR (`C=10`) | 0,8985 | TBD | TBD | TBD | 398.265 | 5,5 s | 0,0014 | [EXP_01](EXP_01_BASELINE.md) |
 | M1 LSTM | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
 | M2 GRU | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
 | M3 BiLSTM | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
