@@ -30,7 +30,7 @@ from src.data.clean import clean_text, text_hash  # noqa: E402
 LENGTH_LIMITS = (200, 400, 600)
 # Dấu hiệu phủ định: "not", "no" chiếm > 55% dấu hiệu phủ định trong SFU Review corpus
 # (Konstantinova et al. 2012); thêm các từ phủ định thường gặp khác (giữ như Lab 3).
-NEGATION_RE = re.compile(r"\b(not|no|never|nothing|none|nor|neither|nobody|without)\b|n't", re.IGNORECASE)
+NEGATION_RE = re.compile(r"\b(?:not|no|never|nothing|none|nor|neither|nobody|without)\b|n't", re.IGNORECASE)
 
 Tokenize = Callable[[str], list]
 

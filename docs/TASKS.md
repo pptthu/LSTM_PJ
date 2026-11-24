@@ -6,7 +6,7 @@
 - **Detailed Plan**: §1 Đã làm được; §2 Chưa làm được; §3 Task từng người; §4 File bàn giao; §5 Mốc kiểm tra; §6 Luật chung.
 - **References**: [OVERVIEW.md](OVERVIEW.md) (12 module), [PURPOSE.md](PURPOSE.md) §10, [phases/](phases/).
 - **Created**: 2026-11-23T10:12:39+07:00
-- **Last Updated**: 2026-11-23T19:05:00+07:00
+- **Last Updated**: 2026-11-24T11:10:00+07:00
 
 ---
 
@@ -26,12 +26,13 @@
 | B1–B2: loại trùng + test (Bảo) | `src/data/prepare.py`, `tests/test_prepare.py`; train 22.499→22.304, val 2.501→2.473, test 25.000; 0 hash/movie chung giữa split; `python -m pytest` → 32 passed; số trong `experiments/results/data_prep/prepare_stats.json` |
 | B1–B2 (bổ sung sau review PR #4) | `test_uids_dup_train.txt` (123 uid test trùng train), `content_hash` = 1029824945594009414 trong `prepare_stats.json`, `check_contract` raise khi `movie_id` chung; `python -m pytest` → 35 passed |
 | B3: EDA trên dữ liệu đã loại trùng (Bảo) | `python -m src.data.eda` → 8 CSV + 6 hình trong `experiments/results/eda/`, `experiments/plots/eda/`; DATA.md §5 có số thật (n = 49.777; median 173 từ; phủ định 89,5% review) |
+| B4: `sample_100.csv` (Bảo) | `src/data/sample.py` → 100 review test (50/50), có rating 4/7, phủ định, ngắn, dài; tất định seed 42; `tests/test_sample.py` 7 test |
 
 ## 2. Chưa làm được
 
 | Việc | Ai | Ghi chú |
 | :--- | :--- | :--- |
-| `sample_100.csv`; baseline B0/B1; điền nốt DATA.md §5 | Bảo | B4–B5 |
+| Baseline B0/B1; điền nốt DATA.md §5 | Bảo | B5 |
 | Tokenizer, vocab, Dataset; `SentimentRNN`; GloVe | Đại | D1–D3 |
 | Vòng train + monitor; pilot; 15 lần chạy chính; mở rộng A/B | Đại | D4–D7 |
 | Chạy test một lần; bảng so sánh; McNemar; file dự đoán | Đại | D8 |
@@ -51,7 +52,7 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (ghi bằng chứng
 | B1 | Đọc 2 split → `apply_split` → làm sạch → loại trùng theo [DATA.md](DATA.md) §4; in số đã loại | `src/data/prepare.py` | `data/processed/reviews.parquet` | T2 23/11 tối | — | ✅ |
 | B2 | Test loại trùng: không còn hash chung giữa train/val và test; test đủ 25.000 | `tests/test_prepare.py` | test pass | T2 tối | B1 | ✅ |
 | B3 | **EDA** sau khi loại trùng: chạy `src.data.eda`; thêm từ phổ biến từng lớp (cột, không dùng biểu đồ tròn); điền [DATA.md](DATA.md) §3–§5 | `src/data/eda.py` | `experiments/results/eda/`, `experiments/plots/eda/` | T2 tối | B1 | ✅ |
-| B4 | Chọn 100 review từ test có ca khó (phủ định, dài, rating 4/7) | — | `data/sample/sample_100.csv` | T2 tối | B1 | ⬜ |
+| B4 | Chọn 100 review từ test có ca khó (phủ định, dài, rating 4/7) | `src/data/sample.py` | `data/sample/sample_100.csv` | T2 tối | B1 | ✅ |
 | B5 | Baseline Majority + TF-IDF (1–2 gram) + LR, chọn `C` trên val; lưu dự đoán val/test cùng định dạng §4 | `src/models/baseline.py` | `experiments/results/baseline/` | T2 tối (val); test chạy cùng lúc với Đại ở D8 | B1 | ⬜ |
 | B6 | Demo Gradio: nhập review → nhãn, xác suất, tô màu từ; đo thời gian trên CPU | `src/predict.py`, `src/demo/app.py` | ảnh chụp demo | T4 25/11 10:00 | D7 (checkpoint), T3 (hàm giải thích) | ⬜ |
 
