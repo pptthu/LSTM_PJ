@@ -230,10 +230,16 @@ def check_contract(df: pd.DataFrame) -> dict:
 
 # ---------------------------------------------------------------- chạy
 def _display_path(path: Path) -> str:
-    """Đường dẫn tương đối so với gốc repo nếu nằm trong repo, ngược lại giữ nguyên."""
+    """Đường dẫn tương đối so với gốc repo nếu nằm trong repo, ngược lại giữ nguyên.
+
+    Luôn trả về dạng POSIX (`/`), để `prepare_stats.json` giống nhau giữa Linux và Windows.
+    Chỉ đổi cách *biểu diễn*; đường dẫn dùng để đọc/ghi file vẫn là `path` gốc.
+    """
+    path = Path(path)
     repo_root = Path(__file__).resolve().parents[2]
-    resolved = Path(path).resolve()
-    return str(resolved.relative_to(repo_root)) if resolved.is_relative_to(repo_root) else str(path)
+    resolved = path.resolve()
+    shown = resolved.relative_to(repo_root) if resolved.is_relative_to(repo_root) else path
+    return shown.as_posix()
 
 
 def committed_stats(stats: dict) -> dict:

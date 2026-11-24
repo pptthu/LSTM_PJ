@@ -65,6 +65,8 @@ aclImdb/
 - Danh sách uid test trùng train: `experiments/results/data_prep/test_uids_dup_train.txt` (**123 dòng**, sắp theo uid, commit) — phase EVAL dùng để báo thêm "test acc khi bỏ 123 review trùng train" (§4).
 - Thống kê từng bước (đầu vào, số bỏ theo từng quy tắc, kiểm rò rỉ): `data/processed/prepare_stats.json` và bản commit `experiments/results/data_prep/prepare_stats.json`.
 
+- Môi trường đã kiểm (2026-11-24, Python 3.12): `pandas==3.1.1`, `pyarrow==26.0.1`, `scikit-learn==1.9.1` — ghim trong `requirements.txt`. Đường dẫn trong `prepare_stats.json` ghi dạng POSIX (`/`) để giống nhau giữa Linux và Windows.
+
 ### Hợp đồng dữ liệu (bàn giao cho Đại)
 
 `data/processed/reviews.parquet`, 49.777 dòng, đúng 7 cột theo thứ tự:
