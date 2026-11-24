@@ -6,7 +6,7 @@
 - **Detailed Plan**: §1 Đã làm được; §2 Chưa làm được; §3 Task từng người; §4 File bàn giao; §5 Mốc kiểm tra; §6 Luật chung.
 - **References**: [OVERVIEW.md](OVERVIEW.md) (12 module), [PURPOSE.md](PURPOSE.md) §10, [phases/](phases/).
 - **Created**: 2026-11-23T10:12:39+07:00
-- **Last Updated**: 2026-11-24T11:20:00+07:00
+- **Last Updated**: 2026-11-24T12:10:00+07:00
 
 ---
 
