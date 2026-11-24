@@ -39,6 +39,8 @@ Chỉ đánh dấu `[x]` khi có bằng chứng (lệnh, đường dẫn output,
   Kiểm: 0 hash chung train/val–test, 0 `movie_id` chung giữa 3 split, 0 nhãn sai, `label` khớp `rating` 100%. Chạy lại 2 lần → sha256 `e6245753…afb7cd` giống hệt.
 - 2026-11-23 (B2, cùng nhánh): `tests/test_prepare.py` 15 test — loại trùng trong/giữa split, test không bị sửa, rò rỉ theo phim, nhãn, schema, tất định, đầu vào rỗng/thiếu cột, chạy end-to-end trên cây aclImdb giả. `python -m pytest` → **32 passed**.
 
+- 2026-11-24 (fix theo review PR #4, nhánh `fix/data-test-dup-list`): `prepare.py` ghi `experiments/results/data_prep/test_uids_dup_train.txt` (**123 uid** test trùng train, sắp theo uid; số dòng trong `prepare_stats.json`); thêm `content_hash` = **1029824945594009414** (so được giữa các máy, thay cho sha256 file); `check_contract` **raise** khi `movie_id` chung giữa các split; bản commit của `prepare_stats.json` bỏ `generated_at` (chạy lại không làm file đổi). DATA.md §3–§4: ghi rõ content_hash vs sha256, quy tắc 4 "Thư chốt 2026-11-23", train 22.304 khác train Lab 3 22.499 ("cùng split, train đã loại trùng"). `python -m pytest` → **35 passed**.
+
 ## Blockers
 
 - Chưa có.
