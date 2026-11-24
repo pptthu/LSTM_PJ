@@ -126,10 +126,87 @@ Ghi lệnh sinh từng số vào [progress/DATA_PREP_STATUS.md](progress/DATA_PR
 
 ## 5. EDA
 
-Chạy `python -m src.data.eda` (hàm lấy từ Lab 3): ghi `experiments/results/eda/*.csv` và 3 hình vào `experiments/plots/eda/` cho **cả train, val, test** (hướng dẫn của cô: thống kê lại trên từng tập đã chia; dùng cột, histogram, không dùng biểu đồ tròn). Mặc định đếm theo **từ**; khi có tokenizer thì truyền `tokenize=` để đếm token. Nội dung:
-- Phân bố nhãn, phân bố `rating`.
-- Độ dài review (số từ): trung bình, trung vị, phân vị 90/95 — dùng để chọn `max_len` mặc định.
-- Từ phổ biến của từng lớp.
+Chạy `python -m src.data.eda` trên **dữ liệu đã loại trùng** `data/processed/reviews.parquet` (B1), không chạy trên dữ liệu gốc. Ghi `experiments/results/eda/*.csv` và 6 hình vào `experiments/plots/eda/` cho **cả train, val, test** (hướng dẫn của cô: thống kê lại trên từng tập đã chia; chỉ dùng cột/histogram, không dùng biểu đồ tròn). Đếm theo **từ** trên `text_clean` (tách theo khoảng trắng); khi có tokenizer thì truyền `tokenize=` để đếm token.
+
+Số dưới đây lấy từ lần chạy 2026-11-23 (`src/data/eda.py`, ~60 s); mọi số đều có file trong `experiments/results/eda/`.
+
+### 5.1 Phân bố dữ liệu và nhãn
+
+| Split | Review | pos | neg | % pos | Phim | Max review/phim |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| train | 22.304 | 11.208 | 11.096 | 50,25% | 3.081 | 30 |
+| val | 2.473 | 1.235 | 1.238 | 49,94% | 343 | 30 |
+| test | 25.000 | 12.500 | 12.500 | 50,00% | 3.581 | 30 |
+
+Phân bố `rating` (`eda_ratings.csv`) — hai đầu thang điểm chiếm ưu thế, không có 5–6:
+
+| rating | 1 | 2 | 3 | 4 | 7 | 8 | 9 | 10 |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| train | 4.502 | 2.034 | 2.150 | 2.410 | 2.258 | 2.690 | 2.024 | 4.236 |
+| val | 526 | 221 | 239 | 252 | 233 | 310 | 223 | 469 |
+| test | 5.022 | 2.302 | 2.541 | 2.635 | 2.307 | 2.850 | 2.344 | 4.999 |
+
+### 5.2 Độ dài review (từ, đã làm sạch)
+
+| Split | mean | median | P90 | P95 | max | >200 từ | >400 từ | >600 từ |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| train | 231,8 | 173 | 455 | 593 | 2.459 | 40,8% | 13,2% | 4,8% |
+| val | 231,3 | 173 | 448 | 589 | 1.832 | 41,7% | 12,6% | 4,8% |
+| test | 226,3 | 170 | 439 | 576 | 2.235 | 39,8% | 12,3% | 4,4% |
+
+Hệ quả cho `max_len` (đếm từ ≈ token): `max_len=200` cắt ~41% review, `400` cắt ~13%, `600` cắt ~5%. Review rất ngắn hiếm: ≤10 từ chỉ 2 review ở train, 0 ở val, 6 ở test (`eda_length_extremes.csv`); review ≥300 từ chiếm ~22% mỗi split.
+
+### 5.3 Từ phổ biến của từng lớp
+
+Bảng đầy đủ: `eda_top_words.csv` (mọi từ) và `eda_top_words_content.csv` (đã bỏ stopword). Top 10 train, đã bỏ stopword:
+
+| # | negative (0) | positive (1) |
+| ---: | :--- | :--- |
+| 1 | movie (21.532) | film (17.956) |
+| 2 | film (16.328) | movie (16.510) |
+| 3 | one (11.175) | one (11.844) |
+| 4 | like (9.718) | like (7.858) |
+| 5 | good (6.461) | good (6.725) |
+| 6 | bad (6.406) | story (5.907) |
+| 7 | time (5.277) | great (5.697) |
+| 8 | see (4.789) | time (5.544) |
+| 9 | story (4.444) | see (5.300) |
+| 10 | people (4.108) | well (5.076) |
+
+Đọc bảng: lớp negative dùng `bad` (6.406) nhiều gần gấp đôi `great`; lớp positive dùng `great/best/love` nổi bật (`best` 3.828, `love` 3.707 trong top 15). `good` xuất hiện nhiều ở **cả hai** lớp — dấu hiệu phủ định/so sánh ("not good") chứ không phải tín hiệu dương thuần. Hai từ `movie`/`film` đứng đầu cả hai lớp → phải nằm trong stopword khi phân tích từ, nhưng vẫn giữ cho mô hình. Hình: `experiments/plots/eda/eda_top_words.png`.
+
+### 5.4 Phủ định
+
+Regex dấu hiệu phủ định: `not|no|never|nothing|none|nor|neither|nobody|without` và `n't` (giữ nguyên như Lab 3; "not"/"no" chiếm >55% dấu hiệu phủ định trong SFU Review corpus — Konstantinova et al. 2012).
+
+| Split | % review lớp 0 có phủ định | % review lớp 1 có phủ định | % toàn split |
+| :--- | ---: | ---: | ---: |
+| train | 93,6% | 85,4% | 89,5% |
+| val | 93,8% | 84,9% | 89,4% |
+| test | 92,9% | 85,3% | 89,1% |
+
+- Dấu hiệu hay gặp nhất (`eda_negation_cues.csv`): `n't` 66.180 lần (39.582 ở lớp 0 / 26.598 lớp 1), `not` 60.489 (32.235/28.254), `no` 25.189 (15.966/9.223), `never` 12.925, `nothing` 8.336.
+- Cụm phủ định hay gặp (`eda_negation_bigrams.csv`): lớp 0 — "not a" 2.075, "not to" 1.397, "not even" 1.322, "don't know" 1.172; lớp 1 — "not a" 1.855, "not only" 1.282, "not to" 1.250.
+- Phủ định có mặt ở ~89% review vì review IMDb rất dài (median 173 từ) — **không** dùng sự có mặt của phủ định làm đặc trưng phân loại; quan trọng là phủ định + từ bị phủ định ("not good" vs "not bad"). Đây là lý do tokenizer của Đại phải giữ `not`, `n't`. Hình: `experiments/plots/eda/eda_negation_share.png`.
+
+### 5.5 Vấn đề chất lượng dữ liệu
+
+`eda_quality_issues.csv` (chỉ ghi các kiểm tra có số > 0):
+
+| Vấn đề | Số lượng | Xử lý |
+| :--- | ---: | :--- |
+| Review trùng nội dung trong train/val | 0 (đã loại ở B1) | — |
+| Review trùng nội dung trong test | 201 bản thừa (394 review nằm trong nhóm trùng) | **Giữ nguyên** theo quy tắc §4; ghi nhận để không diễn giải quá mức chênh lệch test |
+| Hash chung giữa train/val và test | 0 | — |
+| `movie_id` chung giữa các split | 0 (sau khi bỏ 2 review `tt0406816` ở B1) | §4 |
+| `label` không khớp `rating` | 0 | — |
+| `text_clean` rỗng / dưới 3 từ | 0 / 0 | — |
+| Còn thẻ HTML khác `<br />` (`<i>`, `</i>`) | 10 review (7 train, 3 test) | Giữ nguyên — hiếm, tokenizer coi là từ hiếm; ghi ở §9 |
+| Review gốc chứa `<br />` | 58,7% (trung bình 2,3 lần/review) | `clean_text` bỏ ở `text_clean`; hash tính trên `text_clean` |
+
+Đã kiểm thêm bằng `quality_issues` (đều **0** trên dữ liệu thật): ô thiếu (NaN) ở `uid`/`text_clean`/`movie_id`; ký tự thay thế `U+FFFD` (lỗi encoding). Số liệu EDA đã được đối chiếu độc lập (tính lại median/P90/P95/% cắt, phủ định, top từ, trùng lặp — khớp 100%) và chạy 2 lần cho CSV giống hệt từng byte.
+
+Hình còn lại: `eda_label_distribution.png`, `eda_length_hist.png`, `eda_length_by_label.png`, `eda_length_extremes.png`.
 
 ## 6. Vocab & GloVe
 
@@ -149,6 +226,14 @@ Chạy `python -m src.data.eda` (hàm lấy từ Lab 3): ghi `experiments/result
 
 Cột: `text`, `label`, `case_type` (+ `rating`, `source_file` với `sample_100.csv`).
 
+### 7.1 Cách chọn `sample_100.csv` (B4, `src/data/sample.py`)
+
+- Nguồn: **chỉ** tập test của `data/processed/reviews.parquet`; không sửa file test, không dùng mẫu để train/chọn siêu tham số.
+- Tất định: `random.Random(42)`, danh sách uid sắp xếp trước khi lấy → chạy lại cho file giống hệt. Bỏ review trùng nội dung với review đã chọn.
+- Đúng 100 dòng, 50 âm / 50 dương. Mỗi lớp 50 review chia theo thứ tự ưu tiên: `rating_4_negative` 12 (âm sát ngưỡng), `rating_7_positive` 12 (dương sát ngưỡng), `negation` 8 ("not/n't" + từ cảm xúc trong 3 từ), `long_review` 10 (≥500 từ ≈ P90 test), `short_review` 5 (≤20 từ), `random` 15.
+- Kết quả lần chạy 2026-11-23: `random` 30, `long_review` 20, `negation` 16, `rating_4_negative` 12, `rating_7_positive` 12, `short_review` 10; rating 4 và 7 có mặt (18 và 16 review). `cột: uid, text, label, case_type, rating, source_file` (`source_file = "test"`; `uid` chính là tên file gốc trong aclImdb, ví dụ `test_neg_12345`).
+- Hạn chế: nhóm `negation` ưu tiên mẫu "not + từ cảm xúc" nên thiên về ca phủ định rõ; mỉa mai/khen chê lẫn lộn **không** được gán nhãn thủ công (không có nhãn vàng) — dùng cho minh hoạ, không dùng để tính metric.
+
 ## 8. Dữ liệu ngoài miền (mở rộng)
 
 Rotten Tomatoes (Hugging Face `rotten_tomatoes`), chỉ đánh giá chéo, không train lại. Lưu ở `data/raw/rotten_tomatoes/` (không commit).
@@ -156,6 +241,7 @@ Rotten Tomatoes (Hugging Face `rotten_tomatoes`), chỉ đánh giá chéo, khôn
 ## 9. Hạn chế
 
 - Chỉ có review cực tính (≤4 hoặc ≥7 sao): mô hình chưa gặp review trung tính.
-- Văn bản có thẻ HTML (`<br />`), cần làm sạch.
+- Văn bản có thẻ HTML (`<br />`), cần làm sạch. `clean_text` chỉ bỏ `<br />` (giữ hash khớp Lab 3); 10 review còn `<i>`/`</i>` trong `text_clean` (§5.5).
+- Test còn 201 bản trùng nội dung (giữ nguyên theo quy tắc §4) → số test có thể lạc quan hơn một chút so với dữ liệu sạch hoàn toàn; không dùng test để chọn mô hình.
 - Review dài bị cắt ở `max_len`, có thể mất câu kết luận.
 - `sample_100.csv` lấy từ test: chỉ để demo, không dùng chọn mô hình.
