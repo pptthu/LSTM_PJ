@@ -12,7 +12,7 @@ Split train/val lấy nguyên từ `data/splits/train_val_split.json` (split Lab
 Hash là SHA-1 của văn bản đã làm sạch (`src.data.clean.text_hash`) — cùng cách với Lab 3.
 
 Chạy từ gốc repo:
-    python -m src.data.prepare        # ghi data/processed/reviews.parquet + prepare_stats.json
+    python -m src.data.prepare        # reviews.parquet + prepare_stats.json + test_uids_dup_train.txt
 
 Bàn giao cho mô hình: `uid, split, text, text_clean, label, rating, movie_id`.
 """
@@ -105,6 +105,13 @@ def remove_duplicates(
         _with_hash(test_out).groupby(HASH_COLUMN)["label"].nunique().gt(1).sum()
     )
 
+    # uid phía TEST của các review trùng với train/val — lưu lại để phase EVAL báo được
+    # "test acc khi bỏ các review trùng train" (DATA.md §4) dù parquet đã bỏ bản train/val.
+    holdout_hashes = set(train_dedup["text"].map(text_hash)) | set(val_dedup["text"].map(text_hash))
+    test_uids_dup_train = sorted(
+        test_out.loc[test_out["text"].map(text_hash).isin(holdout_hashes), "uid"].tolist()
+    )
+
     train_out = train_dedup[~train_dedup["text"].map(text_hash).isin(test_hashes)].copy()
     val_out = val_dedup[~val_dedup["text"].map(text_hash).isin(test_hashes)].copy()
     cross_train = len(train_dedup) - len(train_out)
@@ -121,6 +128,9 @@ def remove_duplicates(
         "inputs": {"train": len(train), "val": len(val), "test": len(test)},
         "removed_within_split": {"train": train_within, "val": val_within},
         "removed_cross_split": {"train": cross_train, "val": cross_val},
+        "test_reviews_also_in_train": len(test_uids_dup_train),
+        # Khoá nội bộ: `prepare_dataset` ghi ra file rồi bỏ khoá này khỏi JSON.
+        "_test_uids_dup_train": test_uids_dup_train,
         "removed_movie_leak": movie_leak,
         "duplicates_in_test_kept": test_within,
         "label_conflicts_in_duplicate_groups": {
@@ -199,29 +209,49 @@ def check_contract(df: pd.DataFrame) -> dict:
     def _overlap(a: str, b: str) -> int:
         return len(set(df.loc[df["split"] == a, "movie_id"]) & set(df.loc[df["split"] == b, "movie_id"]))
 
+    movie_overlaps = {
+        "movie_overlap_train_val": _overlap("train", "val"),
+        "movie_overlap_train_test": _overlap("train", "test"),
+        "movie_overlap_val_test": _overlap("val", "test"),
+    }
+    if any(movie_overlaps.values()):
+        raise ValueError(f"movie_id shared between splits (leakage): {movie_overlaps}")
+
     return {
         "n_rows": len(df),
         "n_by_split": df["split"].value_counts().reindex(["train", "val", "test"], fill_value=0).to_dict(),
         "pos_share_by_split": df.groupby("split")["label"].mean().round(6).to_dict(),
         "hash_overlap_trainval_test": hash_overlap,
-        "movie_overlap_train_val": _overlap("train", "val"),
-        "movie_overlap_train_test": _overlap("train", "test"),
-        "movie_overlap_val_test": _overlap("val", "test"),
+        **movie_overlaps,
         "label_rating_conflicts": label_conflict,
         "empty_text_clean": int((df["text_clean"].str.len() == 0).sum()),
     }
 
 
 # ---------------------------------------------------------------- chạy
+def _display_path(path: Path) -> str:
+    """Đường dẫn tương đối so với gốc repo nếu nằm trong repo, ngược lại giữ nguyên."""
+    repo_root = Path(__file__).resolve().parents[2]
+    resolved = Path(path).resolve()
+    return str(resolved.relative_to(repo_root)) if resolved.is_relative_to(repo_root) else str(path)
+
+
+def committed_stats(stats: dict) -> dict:
+    """Bản thống kê để commit vào `experiments/`: bỏ `generated_at` (chạy lại không đổi file)."""
+    return {k: v for k, v in stats.items() if k != "generated_at"}
+
+
 def prepare_dataset(
     root: Path | None = None,
     split: dict | None = None,
     out_path: Path | None = None,
+    results_dir: Path | None = None,
 ) -> tuple[pd.DataFrame, dict]:
     """Chạy toàn bộ B1: đọc dữ liệu gốc → áp split → làm sạch → loại trùng → ghi parquet.
 
     Trả về (bảng bàn giao, dict thống kê). Ghi `out_path` (mặc định
-    `data/processed/reviews.parquet`) và `prepare_stats.json` cạnh đó.
+    `data/processed/reviews.parquet`), `prepare_stats.json` cạnh đó, và danh sách uid test
+    trùng train vào `results_dir/test_uids_dup_train.txt` (mặc định `experiments/results/data_prep/`).
     """
     download_imdb(root)
     train_all, test = load_split("train", root), load_split("test", root)
@@ -230,16 +260,22 @@ def prepare_dataset(
     parts, stats = remove_duplicates(train, val, test)
     processed = build_processed(parts)
     stats["contract"] = check_contract(processed)
+    # Hash theo NỘI DUNG: giống nhau giữa các máy/phiên bản pandas (sha256 file parquet thì không).
+    stats["content_hash"] = int(pd.util.hash_pandas_object(processed, index=False).sum())
 
     out_path = Path(out_path) if out_path is not None else data_dir("processed") / "reviews.parquet"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     processed.to_parquet(out_path, index=False)
-    repo_root = Path(__file__).resolve().parents[2]
-    stats["output_file"] = (
-        str(out_path.resolve().relative_to(repo_root))
-        if out_path.resolve().is_relative_to(repo_root)
-        else str(out_path)
-    )
+    stats["output_file"] = _display_path(out_path)
+
+    # uid phía test của các review trùng train/val — phase EVAL dùng để báo "test acc khi bỏ
+    # các review trùng train" (DATA.md §4) mà không cần đụng vào parquet 7 cột.
+    uids = stats.pop("_test_uids_dup_train", [])
+    results_dir = Path(results_dir) if results_dir is not None else experiment_dir("results", "data_prep")
+    results_dir.mkdir(parents=True, exist_ok=True)
+    uids_path = results_dir / "test_uids_dup_train.txt"
+    uids_path.write_text("".join(f"{uid}\n" for uid in uids), encoding="utf-8")
+    stats["test_uids_dup_train"] = {"n": len(uids), "file": _display_path(uids_path)}
 
     import json
 
@@ -261,6 +297,10 @@ def _print_report(stats: dict) -> None:
     print(f"{'đầu ra':28s}{stats['outputs']['train']:>8d}{stats['outputs']['val']:>8d}{stats['outputs']['test']:>8d}")
     print("(cột test ở dòng 2 là số bản trùng trong test được GIỮ LẠI, không xoá)")
     print()
+    dup = stats.get("test_uids_dup_train")
+    if dup:
+        print(f"  test review trùng train (giữ trong test): {stats['test_reviews_also_in_train']} → {dup['file']}")
+    print(f"  content_hash: {stats['content_hash']}  (hash nội dung, so được giữa các máy)")
     for key, value in stats["contract"].items():
         print(f"  {key}: {value}")
 
@@ -278,8 +318,9 @@ def main() -> None:
     import json
 
     results = experiment_dir("results", "data_prep") / "prepare_stats.json"
-    results.write_text(json.dumps(stats, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"Thống kê: {results}")
+    results.write_text(json.dumps(committed_stats(stats), ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"Thống kê (commit): {results}")
+    print(f"uid test trùng train: {results.parent / 'test_uids_dup_train.txt'}")
 
 
 if __name__ == "__main__":

@@ -14,6 +14,7 @@
   "train": 106,
   "val": 17
  },
+ "test_reviews_also_in_train": 123,
  "removed_movie_leak": {
   "train": 2,
   "val": 0,
@@ -33,7 +34,6 @@
   "test": 25000
  },
  "test_unchanged": true,
- "generated_at": "2026-11-23T10:12:18+00:00",
  "contract": {
   "n_rows": 49777,
   "n_by_split": {
@@ -53,5 +53,10 @@
   "label_rating_conflicts": 0,
   "empty_text_clean": 0
  },
- "output_file": "data/processed/reviews.parquet"
+ "content_hash": 1029824945594009414,
+ "output_file": "data/processed/reviews.parquet",
+ "test_uids_dup_train": {
+  "n": 123,
+  "file": "experiments/results/data_prep/test_uids_dup_train.txt"
+ }
 }
