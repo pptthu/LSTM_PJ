@@ -48,8 +48,8 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (ghi bằng chứng
 
 | ID | Task | File | Đầu ra | Hạn | Phụ thuộc | TT |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| B1 | Đọc 2 split → `apply_split` → làm sạch → loại trùng theo [DATA.md](DATA.md) §4; in số đã loại | `src/data/prepare.py` | `data/processed/reviews.parquet` | T2 23/11 tối | — | ⬜ |
-| B2 | Test loại trùng: không còn hash chung giữa train/val và test; test đủ 25.000 | `tests/test_prepare.py` | test pass | T2 tối | B1 | ⬜ |
+| B1 | Đọc 2 split → `apply_split` → làm sạch → loại trùng theo [DATA.md](DATA.md) §4; in số đã loại | `src/data/prepare.py` | `data/processed/reviews.parquet` | T2 23/11 tối | — | ✅ |
+| B2 | Test loại trùng: không còn hash chung giữa train/val và test; test đủ 25.000 | `tests/test_prepare.py` | test pass | T2 tối | B1 | ✅ |
 | B3 | **EDA** sau khi loại trùng: chạy `src.data.eda`; thêm từ phổ biến từng lớp (cột, không dùng biểu đồ tròn); điền [DATA.md](DATA.md) §3–§5 | `src/data/eda.py` | `experiments/results/eda/`, `experiments/plots/eda/` | T2 tối | B1 | ✅ |
 | B4 | Chọn 100 review từ test có ca khó (phủ định, dài, rating 4/7) | — | `data/sample/sample_100.csv` | T2 tối | B1 | ⬜ |
 | B5 | Baseline Majority + TF-IDF (1–2 gram) + LR, chọn `C` trên val; lưu dự đoán val/test cùng định dạng §4 | `src/models/baseline.py` | `experiments/results/baseline/` | T2 tối (val); test chạy cùng lúc với Đại ở D8 | B1 | ⬜ |
