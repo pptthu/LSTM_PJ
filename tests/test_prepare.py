@@ -2,11 +2,18 @@
 
 Dùng bảng tổng hợp nhỏ (không cần tải 84 MB) + cây aclImdb giả trong `tests/conftest.py`.
 """
+import ast
+import json
+import os
+import shutil
+from pathlib import Path
+
 import pandas as pd
 import pytest
 
 from src.data.prepare import (
     COLUMNS,
+    _display_path,
     build_processed,
     check_contract,
     committed_stats,
@@ -236,3 +243,81 @@ def test_prepare_dataset_end_to_end_on_fake_imdb(fake_imdb_root, tmp_path):
     assert stats["test_uids_dup_train"]["n"] == 1
     assert stats["test_uids_dup_train"]["file"].endswith("test_uids_dup_train.txt")
     assert "content_hash" in stats
+
+# ---------------------------------------------------------------- đường dẫn & tái lập
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_display_path_has_single_return_and_uses_as_posix():
+    """Chặn hồi quy: không được để return cũ trước đoạn .as_posix() (code không bao giờ chạy)."""
+    source = (REPO_ROOT / "src" / "data" / "prepare.py").read_text(encoding="utf-8")
+    fn = next(n for n in ast.walk(ast.parse(source))
+              if isinstance(n, ast.FunctionDef) and n.name == "_display_path")
+    returns = [n for n in ast.walk(fn) if isinstance(n, ast.Return)]
+    assert len(returns) == 1, "chỉ được có một return"
+    assert fn.body[-1] is returns[0], "return phải là câu lệnh cuối (không có code không bao giờ chạy)"
+    assert "as_posix()" in ast.get_source_segment(source, fn)
+
+
+def test_display_path_inside_repo_is_relative_posix():
+    out = _display_path(REPO_ROOT / "data" / "processed" / "reviews.parquet")
+    assert out == "data/processed/reviews.parquet"
+    assert "\\" not in out
+
+
+def test_display_path_relative_input_inside_repo():
+    assert _display_path(Path("data/processed/reviews.parquet")) == "data/processed/reviews.parquet"
+
+
+def test_display_path_outside_repo_is_absolute_posix(tmp_path):
+    out = _display_path(tmp_path / "out" / "reviews.parquet")
+    assert out.endswith("out/reviews.parquet")
+    assert "\\" not in out
+
+
+@pytest.mark.skipif(os.name != "nt", reason="chỉ kiểm được dấu \\ của WindowsPath khi chạy trên Windows")
+def test_display_path_normalizes_windows_native_separators():
+    native = str(REPO_ROOT / "data" / "processed" / "reviews.parquet")
+    assert "\\" in native  # sanity: Windows dùng backslash
+    assert "\\" not in _display_path(REPO_ROOT / "data" / "processed" / "reviews.parquet")
+
+
+def test_prepare_stats_json_is_stable_across_runs(fake_imdb_root, tmp_path):
+    from src.data.download import load_split
+
+    # nạp cả 2 split để tạo bộ đệm parquet (download_imdb bỏ qua kiểm 12.500 file khi đã có đệm)
+    train_all = load_split("train", fake_imdb_root)
+    load_split("test", fake_imdb_root)
+    split = make_train_val_split(train_all, seed=0, n_folds=2)
+    out_path, results_dir = tmp_path / "reviews.parquet", tmp_path / "results"
+
+    _, first = prepare_dataset(root=fake_imdb_root, split=split, out_path=out_path, results_dir=results_dir)
+    snapshot = json.dumps(committed_stats(first), ensure_ascii=False, sort_keys=True)
+    _, second = prepare_dataset(root=fake_imdb_root, split=split, out_path=out_path, results_dir=results_dir)
+
+    assert json.dumps(committed_stats(second), ensure_ascii=False, sort_keys=True) == snapshot
+    assert "generated_at" not in committed_stats(second)
+
+
+def test_prepare_stats_change_when_input_changes(fake_imdb_root, tmp_path):
+    from src.data.download import load_split
+
+    # nạp cả 2 split để tạo bộ đệm parquet (download_imdb bỏ qua kiểm 12.500 file khi đã có đệm)
+    train_all = load_split("train", fake_imdb_root)
+    load_split("test", fake_imdb_root)
+    split = make_train_val_split(train_all, seed=0, n_folds=2)
+    _, first = prepare_dataset(root=fake_imdb_root, split=split, out_path=tmp_path / "a" / "r.parquet",
+                               results_dir=tmp_path / "a" / "results")
+
+    modified_root = tmp_path / "raw2"
+    shutil.copytree(fake_imdb_root, modified_root)
+    cached = modified_root / "imdb_train.parquet"
+    train = pd.read_parquet(cached)
+    train.loc[0, "text"] = train.loc[0, "text"] + " TOTALLY DIFFERENT ENDING"
+    train.to_parquet(cached, index=False)
+
+    _, second = prepare_dataset(root=modified_root, split=split, out_path=tmp_path / "b" / "r.parquet",
+                                results_dir=tmp_path / "b" / "results")
+
+    assert second["content_hash"] != first["content_hash"]
+    assert second["outputs"]["test"] == second["inputs"]["test"]  # test vẫn nguyên
