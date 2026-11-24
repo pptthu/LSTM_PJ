@@ -6,7 +6,7 @@
 - **Detailed Plan**: §1 Đã làm được; §2 Chưa làm được; §3 Task từng người; §4 File bàn giao; §5 Mốc kiểm tra; §6 Luật chung.
 - **References**: [OVERVIEW.md](OVERVIEW.md) (12 module), [PURPOSE.md](PURPOSE.md) §10, [phases/](phases/).
 - **Created**: 2026-11-23T10:12:39+07:00
-- **Last Updated**: 2026-11-24T12:10:00+07:00
+- **Last Updated**: 2026-11-24T15:37:09+07:00
 
 ---
 
@@ -28,6 +28,7 @@
 | B3: EDA trên dữ liệu đã loại trùng (Bảo) | `python -m src.data.eda` → 8 CSV + 6 hình trong `experiments/results/eda/`, `experiments/plots/eda/`; DATA.md §5 có số thật (n = 49.777; median 173 từ; phủ định 89,5% review) |
 | B4: `sample_100.csv` (Bảo) | `src/data/sample.py` → 100 review test (50/50), có rating 4/7, phủ định, ngắn, dài; tất định seed 42; `tests/test_sample.py` 7 test |
 | B5: baseline M0a/M0b (Bảo) | `python -m src.models.baseline` → M0a val acc 0,4994; M0b `C=10` val acc 0,8985, macro-F1 0,8985, AUC 0,9623; `experiments/results/baseline/`; [EXP_01](experiments/EXP_01_BASELINE.md) |
+| T1: 30 câu tự viết (Thư) | `data/sample/handwritten_30.csv` — 6 nhóm × 5, nhãn 15/15; AI soạn nháp, Thư duyệt nhãn; 0 câu trùng nguyên văn IMDb (`experiments/results/data_prep/handwritten_30_check.json`) |
 
 ## 2. Chưa làm được
 
@@ -74,7 +75,7 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (ghi bằng chứng
 | ID | Task | File | Đầu ra | Hạn | Phụ thuộc | TT |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | T0 | Duyệt + merge PR; thêm collaborator; điền MSSV | — | — | liên tục | — | ⬜ |
-| T1 | Viết 30 câu tự viết **trước khi** chạy mô hình: 5 tích cực, 5 tiêu cực, 5 phủ định, 5 mỉa mai, 5 vừa khen vừa chê, 5 ngoài miền | `data/sample/handwritten_30.csv` | file 30 dòng (`text,label,case_type`) | T2 tối | — | ⬜ |
+| T1 | Viết 30 câu tự viết **trước khi** chạy mô hình: 5 tích cực, 5 tiêu cực, 5 phủ định, 5 mỉa mai, 5 vừa khen vừa chê, 5 ngoài miền | `data/sample/handwritten_30.csv` | file 30 dòng (`text,label,case_type`) | T2 tối | — | ✅ |
 | T2 | **Error analysis**: accuracy theo 7 nhóm tình huống (kèm số mẫu); ≥ 10 ví dụ sai/nhóm có giải thích; gán tay 50 lỗi (vừa khen vừa chê, mỉa mai); kết quả 30 câu | `src/eval/error_analysis.py` | `experiments/results/error_analysis/` | T3 tối – T4 sáng | D8 | ⬜ |
 | T3 | Giải thích mô hình: occlusion (+ deletion test) trên mẫu review; kiểm "đường tắt" | `src/eval/explain.py` | hình heatmap từ | T4 sáng | D8 | ⬜ |
 | T4 | Notebook trình bày (tiếng Việt), section: EDA → Baseline → Model → **Monitor training** → **Evaluation** → **Error analysis** → Demo; chỉ đọc `experiments/` | `notebooks/presentation.ipynb` | notebook chạy hết | T4 12:00 | B3, D6, D8, T2 | ⬜ |

@@ -6,7 +6,7 @@
 - **Detailed Plan**: §1 Nguồn; §2 Cấu trúc file; §3 Giao thức split; §4 Trùng lặp & rò rỉ; §5 EDA; §6 Vocab & GloVe; §7 Dữ liệu mẫu; §8 Dữ liệu ngoài miền; §9 Hạn chế.
 - **References**: [PURPOSE.md](PURPOSE.md) §5, §9; [phases/DATA_PREP.md](phases/DATA_PREP.md).
 - **Created**: 2026-11-05T11:21:04+07:00
-- **Last Updated**: 2026-11-23T10:01:39+07:00
+- **Last Updated**: 2026-11-24T15:37:09+07:00
 
 ---
 
@@ -222,9 +222,16 @@ Hình còn lại: `eda_label_distribution.png`, `eda_length_hist.png`, `eda_leng
 | File | Nội dung | Dùng cho |
 | :--- | :--- | :--- |
 | `sample_100.csv` | 100 review lấy từ test, có cả ca khó (phủ định, mỉa mai, dài, khen chê lẫn lộn, điểm sát ngưỡng) | Demo, minh họa trong báo cáo |
-| `handwritten_30.csv` | ~30 câu nhóm tự viết, gồm câu ngắn và câu ngoài miền phim | Nhóm tình huống 7, thử độ bền demo |
+| `handwritten_30.csv` | 30 câu tự viết, 6 nhóm × 5 (positive, negative, negation, sarcasm, mixed, out_of_domain), nhãn 15/15 | Nhóm tình huống 7, thử độ bền demo |
 
 Cột: `text`, `label`, `case_type` (+ `rating`, `source_file` với `sample_100.csv`).
+
+### 7.0 `handwritten_30.csv` (T1, 2026-11-24)
+
+- **Nguồn:** AI soạn nháp theo prompt ở [references/PROMPT_HANDWRITTEN_30.md](references/PROMPT_HANDWRITTEN_30.md); **Thư duyệt nhãn** và thay 2 câu để cân bằng nhãn (1 câu `sarcasm` và 1 câu `mixed` đổi thành nhãn 1). Viết **trước khi** có mô hình RNN.
+- **Cân bằng:** 15 nhãn 1 / 15 nhãn 0. 25 câu được chấm (bỏ `out_of_domain`): 12 nhãn 1 / 13 nhãn 0. 5 câu `out_of_domain` chỉ báo dự đoán, không tính accuracy.
+- **Không lấy từ IMDb:** `python -m src.data.check_handwritten` so với 50.000 review train + test: **0 câu trùng nguyên văn**; 7/30 câu có một cụm 6 từ thông dụng cũng có trong IMDb (vd `not a bad film at all`, `there is no reason to watch`). Kết quả: `experiments/results/data_prep/handwritten_30_check.json`.
+- **Lưu ý:** câu "I didn't enjoy the first half, but the second half completely changed my impression…" đang ở nhóm `negation` nhưng gần với `mixed` hơn (đổi giọng ở cuối); khi phân tích lỗi ghi chú điểm này.
 
 ### 7.1 Cách chọn `sample_100.csv` (B4, `src/data/sample.py`)
 
