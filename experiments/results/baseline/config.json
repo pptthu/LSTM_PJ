@@ -21,15 +21,17 @@
   0.01,
   0.1,
   1.0,
-  10.0
+  10.0,
+  30.0,
+  100.0
  ],
  "sklearn_version": "1.9.1",
  "selected_C": 10.0,
  "timing": {
-  "vectorize_s": 9.502,
-  "train_s": 4.832,
-  "inference_ms": 5.498,
-  "inference_ms_per_review": 0.0022
+  "vectorize_s": 8.757,
+  "train_s": 5.483,
+  "inference_ms": 3.432,
+  "inference_ms_per_review": 0.0014
  },
  "n_train": 22304,
  "n_val": 2473

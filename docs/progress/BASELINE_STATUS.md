@@ -6,7 +6,7 @@
 - **Detailed Plan**: Header; Checklist; Log; Blockers; Decisions; Next step; Links.
 - **References**: [../phases/BASELINE.md](../phases/BASELINE.md), [../OVERVIEW.md](../OVERVIEW.md).
 - **Created**: 2026-11-05T11:21:04+07:00
-- **Last Updated**: 2026-11-23T20:05:00+07:00
+- **Last Updated**: 2026-11-24T11:30:00+07:00
 
 ---
 
@@ -34,6 +34,8 @@ Chỉ đánh dấu `[x]` khi có bằng chứng (lệnh, đường dẫn output,
 - 2026-11-05: Tạo file.
 - 2026-11-23 (B5, nhánh `feat/baseline`): `src/models/baseline.py` xong. `python -m src.models.baseline` (~24 s): M0a majority = 1 → val acc **0,4994**, macro-F1 0,3331, AUC 0,5. M0b TF-IDF 1–2 gram (`min_df=2`, 398.264 đặc trưng) + LR quét `C` 0,01/0,1/1/10 → chọn **C=10**: val acc **0,8985**, macro-F1 0,8985, ROC-AUC **0,9623**; confusion matrix `[[1093,145],[106,1129]]`; vectorize 9,5 s, train 4,8 s, inference 0,0022 ms/review. Test **không đọc** (chạy ở D8). Kết quả: `experiments/results/baseline/{metrics.json,config.json,c_grid.csv,predictions_val.csv}`; checkpoint `experiments/checkpoints/baseline_tfidf_lr.joblib` (không commit). `tests/test_baseline.py` 6 test; `python -m pytest` → 23 passed trên nhánh này.
 - 2026-11-23 (B5, kiểm thêm): thử `C` = 20/30/50/100 → val acc giảm (0,8969/0,8961/0,8957/0,8953), giữ `C=10`.
+
+- 2026-11-24 (mở rộng lưới `C`, theo review PR #11): lưới cũ `{0,01; 0,1; 1; 10}` dừng ở cận trên → chạy lại với `{0,01; 0,1; 1; 10; 30; 100}`. Val acc: 0,7820 / 0,8346 / 0,8799 / **0,8985** / 0,8961 / 0,8953 → cực đại thật tại `C=10`. Train acc lên 0,9993 (`C=10`) và 1,0000 (`C=30/100`), khoảng cách train–val nới 3,6 → 10,5 điểm: dấu hiệu overfitting khi `C` lớn. Giữ `C=10`. Kết quả + cột train accuracy trong `experiments/results/baseline/c_grid.csv`, `metrics.json`; EXP_01 cập nhật bảng và nhận xét.
 
 ## Blockers
 

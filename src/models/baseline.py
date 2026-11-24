@@ -33,7 +33,7 @@ from sklearn.metrics import (
 from src.utils.paths import data_dir, experiment_dir
 
 RANDOM_STATE = 42
-C_GRID = (0.01, 0.1, 1.0, 10.0)
+C_GRID = (0.01, 0.1, 1.0, 10.0, 30.0, 100.0)
 TEXT_COLUMN = "text_clean"  # cùng đầu vào với tokenizer/LSTM (đã bỏ <br />, giữ hoa/thường)
 
 
@@ -123,9 +123,14 @@ def fit_tfidf_lr(
         infer_time = time.perf_counter() - t_pred
 
         metrics = compute_metrics(val["label"], pred, prob)
+        # accuracy trên train để thấy dấu hiệu overfitting (khoảng cách train–val tăng dần theo C)
+        train_pred = (model.predict_proba(x_train)[:, 1] >= 0.5).astype(int)
+        train_accuracy = float(accuracy_score(train["label"], train_pred))
         rows.append({
             "C": float(c_value),
+            "train_accuracy": round(train_accuracy, 4),
             "val_accuracy": metrics["accuracy"],
+            "train_minus_val_accuracy": round(train_accuracy - metrics["accuracy"], 4),
             "val_macro_f1": metrics["macro_f1"],
             "val_roc_auc": metrics["roc_auc"],
             "train_time_s": round(train_time, 3),
