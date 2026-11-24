@@ -59,7 +59,10 @@ aclImdb/
 | test | 25.000 | 12.500 | 12.500 | 50,00% | 3.581 | Chỉ chạy một lần ở phase EVAL |
 | **tổng** | **49.777** | | | | | |
 
-- File: `data/processed/reviews.parquet` (81,2 MB, không commit), sha256 `e6245753b609cfdcfa1c6c57bd8bf4cb07ad80f7c9e47cfa1d703d8136afb7cd`. Chạy lại `prepare` cho file giống hệt từng byte (đã kiểm).
+- File: `data/processed/reviews.parquet` (81,2 MB, không commit).
+- **So sánh nội dung giữa các máy bằng `content_hash`**, không dùng sha256 file: `content_hash = int(pd.util.hash_pandas_object(df, index=False).sum())` = **`1029824945594009414`** (giống nhau trên máy Bảo và máy Thư). Giá trị ghi trong `experiments/results/data_prep/prepare_stats.json`.
+- sha256 file parquet (`e6245753…` trên máy Bảo, `becd19a8…` trên máy Thư) **chỉ trùng khi cùng phiên bản pandas/pyarrow** vì parquet ghi metadata thư viện — khác nhau không có nghĩa là file sai. Chạy lại `prepare` trên cùng máy vẫn cho cùng sha256.
+- Danh sách uid test trùng train: `experiments/results/data_prep/test_uids_dup_train.txt` (**123 dòng**, sắp theo uid, commit) — phase EVAL dùng để báo thêm "test acc khi bỏ 123 review trùng train" (§4).
 - Thống kê từng bước (đầu vào, số bỏ theo từng quy tắc, kiểm rò rỉ): `data/processed/prepare_stats.json` và bản commit `experiments/results/data_prep/prepare_stats.json`.
 
 ### Hợp đồng dữ liệu (bàn giao cho Đại)
@@ -84,7 +87,7 @@ val   = df[df["split"] == "val"].reset_index(drop=True)
 test  = df[df["split"] == "test"].reset_index(drop=True)   # chỉ dùng ở EVAL
 ```
 
-Bất biến đã kiểm bằng code (`src.data.prepare.check_contract`): 0 hash chung giữa train/val và test; 0 `movie_id` chung giữa 3 split; `label` khớp `rating` 100%; không NaN ở `text`/`text_clean`. Test giữ đúng 25.000 review, không sửa một dòng nào.
+Bất biến đã kiểm bằng code (`src.data.prepare.check_contract`, **raise nếu vi phạm**): 0 hash chung giữa train/val và test; 0 `movie_id` chung giữa 3 split; `label` khớp `rating` 100%; không NaN ở `text`/`text_clean`. Test giữ đúng 25.000 review, không sửa một dòng nào.
 
 ## 4. Trùng lặp & rò rỉ
 
@@ -95,6 +98,9 @@ Hash = SHA-1 của văn bản đã làm sạch (bỏ `<br />`, gộp khoảng tr
 - Trùng giữa train/val và test: bỏ bản ở train/val, để test giữ nguyên 25.000.
 - Trùng trong test: không xoá (test giữ nguyên); ghi số lượng vào bảng.
 - Báo thêm số test khi bỏ các review test trùng với train (so sánh được với Lab 3).
+- Review của phim có mặt trong test: bỏ khỏi train/val, giữ test (**Thư chốt 2026-11-23**; dữ liệu thật có 1 phim như vậy — `tt0406816`).
+
+**Train cuối (22.304) không còn giống train Lab 3 (22.499)**: đã loại 98 bản trùng + 123 review trùng với test + 2 review của phim lọt. Khi so với DistilBERT của Lab 3, ghi là **"cùng split (cùng val), train đã loại trùng"** — không so số tuyệt đối của train giữa hai bên.
 
 Số đo thật (2026-11-23, `python -m src.data.prepare`; nguồn: `experiments/results/data_prep/prepare_stats.json`):
 
@@ -102,11 +108,12 @@ Số đo thật (2026-11-23, `python -m src.data.prepare`; nguồn: `experiments
 | :--- | :--- |
 | Review trùng trong train chính thức (đã loại) | **98** — 87 ở phần train + 11 ở phần val |
 | Review trùng giữa train và test (đã loại khỏi train/val) | **123** — 106 ở train + 17 ở val (khớp Lab 3: 123 review test trùng train) |
-| Review trùng trong test (chỉ ghi nhận, giữ nguyên) | **201** bản thừa, 402 review nằm trong nhóm trùng |
+| Review trùng trong test (chỉ ghi nhận, giữ nguyên) | **201** bản thừa, **394** review nằm trong nhóm trùng |
 | `movie_id` chung giữa train và val | **0** |
 | `movie_id` chung giữa train và test | **1 phim** (`tt0406816`, "The Guardian"): 2 review train, 23 review test — đã bỏ 2 review train, giữ test |
 | `movie_id` chung giữa val và test | **0** |
 | Hash chung giữa train/val và test sau khi xử lý | **0** |
+| uid test trùng train (đã lưu) | **123**, trong `experiments/results/data_prep/test_uids_dup_train.txt` |
 | Nhóm trùng khác nhãn (cùng nội dung, khác nhãn) | **0** ở cả 3 split |
 | Tỷ lệ nhãn mỗi split | train 50,25% pos · val 49,94% · test 50,00% |
 | `label` không khớp `rating`, `text` rỗng | **0** |
@@ -194,6 +201,8 @@ Regex dấu hiệu phủ định: `not|no|never|nothing|none|nor|neither|nobody|
 | `text_clean` rỗng / dưới 3 từ | 0 / 0 | — |
 | Còn thẻ HTML khác `<br />` (`<i>`, `</i>`) | 10 review (7 train, 3 test) | Giữ nguyên — hiếm, tokenizer coi là từ hiếm; ghi ở §9 |
 | Review gốc chứa `<br />` | 58,7% (trung bình 2,3 lần/review) | `clean_text` bỏ ở `text_clean`; hash tính trên `text_clean` |
+
+Đã kiểm thêm bằng `quality_issues` (đều **0** trên dữ liệu thật): ô thiếu (NaN) ở `uid`/`text_clean`/`movie_id`; ký tự thay thế `U+FFFD` (lỗi encoding). Số liệu EDA đã được đối chiếu độc lập (tính lại median/P90/P95/% cắt, phủ định, top từ, trùng lặp — khớp 100%) và chạy 2 lần cho CSV giống hệt từng byte.
 
 Hình còn lại: `eda_label_distribution.png`, `eda_length_hist.png`, `eda_length_by_label.png`, `eda_length_extremes.png`.
 

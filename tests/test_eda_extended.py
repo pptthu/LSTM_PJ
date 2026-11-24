@@ -80,9 +80,16 @@ def test_quality_issues_flags_leak_and_label_conflict():
         "val": frame([]),
         "test": frame([("s1", "test", "Same.", "Same.", 1, 9, "tt9")]),
     }
-    issues = quality_issues(parts).set_index(["scope", "check"])["count"]
-    assert issues[("global", "hash chung giữa train/val và test")] == 1
-    assert issues[("split", "label không khớp rating")] == 1
+    issues = quality_issues(parts).set_index(["scope", "split", "check"])["count"].sort_index()
+    assert issues[("global", "train/val–test", "hash chung giữa train/val và test")] == 1
+    assert issues[("split", "train", "label không khớp rating")] == 1
+
+
+def test_quality_issues_flags_missing_values():
+    train = frame([("t1", "train", "ok text", "ok text", 1, 9, "tt1")])
+    train.loc[0, "text_clean"] = None
+    issues = quality_issues({"train": train}).set_index(["scope", "split", "check"])["count"].sort_index()
+    assert issues[("split", "train", "ô bị thiếu (NaN) ở cột bắt buộc")] == 1
 
 
 def test_run_extended_eda_writes_all_files(tmp_path):
