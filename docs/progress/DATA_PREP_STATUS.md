@@ -15,7 +15,7 @@
 - **Title:** Chuẩn bị dữ liệu & split
 - **Date created:** 2026-11-05
 - **Last updated:** 2026-11-23
-- **Status:** In Progress — B1–B4 xong; B5 làm sau
+- **Status:** Done (B1–B4)
 - **Owner:** Bảo
 - **Hạn:** T2 23/11 tối — giao `reviews.parquet` cho Đại
 - **Phase doc:** [../phases/DATA_PREP.md](../phases/DATA_PREP.md)

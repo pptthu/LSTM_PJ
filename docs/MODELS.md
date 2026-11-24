@@ -6,7 +6,7 @@
 - **Detailed Plan**: §1 Bảng mô hình; §2 Kiến trúc chung; §3 Checkpoint & load lại; §4 Mô hình mở rộng.
 - **References**: [PURPOSE.md](PURPOSE.md) §7, [phases/MODEL.md](phases/MODEL.md), `src/models/`.
 - **Created**: 2026-11-05T11:21:04+07:00
-- **Last Updated**: 2026-11-23T10:13:39+07:00
+- **Last Updated**: 2026-11-23T20:05:00+07:00
 
 ---
 
@@ -17,7 +17,7 @@ Số tham số đếm bằng code (`sum(p.numel() for p in model.parameters())`)
 | ID | Mô hình | Embedding | RNN | Tham số (tổng / train được) | Checkpoint |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | M0a | Majority class | — | — | 0 | — (không cần lưu) |
-| M0b | TF-IDF (1–2 gram) + Logistic Regression | — | — | TBD | `experiments/checkpoints/baseline_tfidf_lr.joblib` |
+| M0b | TF-IDF (1–2 gram, 398.264 đặc trưng) + Logistic Regression `C=10` | — | — | 398.265 | `experiments/checkpoints/baseline_tfidf_lr.joblib` |
 | M1 | LSTM (bắt buộc) | học từ đầu, 100d | LSTM 1 chiều, 128 | TBD | `experiments/checkpoints/lstm/seed_<s>/best.pt` |
 | M2 | GRU | học từ đầu, 100d | GRU 1 chiều, 128 | TBD | `experiments/checkpoints/gru/seed_<s>/best.pt` |
 | M3 | BiLSTM | học từ đầu, 100d | LSTM 2 chiều, 128 × 2 | TBD | `experiments/checkpoints/bilstm/seed_<s>/best.pt` |
