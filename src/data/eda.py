@@ -290,6 +290,11 @@ _HTML_TAG_RE = re.compile(r"<[a-zA-Z/][^>]*>")
 _LETTER_RE = re.compile(r"[A-Za-z]")
 
 
+def _hash_series(df: pd.DataFrame) -> pd.Series:
+    """SHA-1 từng review; giá trị thiếu/không phải chuỗi → "" để quality check báo NaN thay vì sập."""
+    return df["text"].map(lambda t: text_hash(t) if isinstance(t, str) else "")
+
+
 def quality_issues(parts: dict[str, pd.DataFrame]) -> pd.DataFrame:
     """Bảng kiểm chất lượng dữ liệu: mỗi dòng = một kiểm tra × split (hoặc toàn cục)."""
     rows = []
@@ -301,8 +306,8 @@ def quality_issues(parts: dict[str, pd.DataFrame]) -> pd.DataFrame:
     for name, df in parts.items():
         clean = (df["text_clean"] if "text_clean" in df.columns else df["text"].map(clean_text)).fillna("")
         lens = token_lengths(clean.tolist())
-        hashes = df["text"].map(text_hash)
-        required = [c for c in ("uid", "text_clean", "movie_id") if c in df.columns]
+        hashes = _hash_series(df)
+        required = [c for c in ("uid", "text", "text_clean", "movie_id") if c in df.columns]
         add("split", name, "ô bị thiếu (NaN) ở cột bắt buộc",
             int(df[required].isna().any(axis=1).sum()), ", ".join(required))
         add("split", name, "ký tự thay thế U+FFFD (lỗi encoding)",
@@ -321,7 +326,7 @@ def quality_issues(parts: dict[str, pd.DataFrame]) -> pd.DataFrame:
     holdout = pd.concat([parts[s] for s in ("train", "val") if s in parts])
     if "test" in parts:
         add("global", "train/val–test", "hash chung giữa train/val và test",
-            len(set(holdout["text"].map(text_hash)) & set(parts["test"]["text"].map(text_hash))), "rò rỉ nội dung")
+            len(set(_hash_series(holdout)) & set(_hash_series(parts["test"]))), "rò rỉ nội dung")
     if "train" in parts and "val" in parts:
         add("global", "train–val", "movie_id chung giữa train và val",
             len(set(parts["train"]["movie_id"]) & set(parts["val"]["movie_id"])))
@@ -329,7 +334,7 @@ def quality_issues(parts: dict[str, pd.DataFrame]) -> pd.DataFrame:
         add("global", "train/val–test", "movie_id chung giữa train/val và test",
             len(set(holdout["movie_id"]) & set(parts["test"]["movie_id"])), "rò rỉ ở mức phim")
         add("global", "test", "review trùng nội dung trong test (bản thừa, giữ nguyên)",
-            int(parts["test"]["text"].map(text_hash).duplicated().sum()))
+            int(_hash_series(parts["test"]).duplicated().sum()))
     return pd.DataFrame(rows, columns=["scope", "split", "check", "count", "detail"])
 
 
