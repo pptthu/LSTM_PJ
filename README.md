@@ -6,7 +6,7 @@
 - **Detailed Plan**: §1 Mục tiêu; §2 Cấu trúc thư mục; §3 Cài đặt; §4 Lệnh chạy; §5 Kết quả; §6 Tài liệu.
 - **References**: [docs/PURPOSE.md](docs/PURPOSE.md), [docs/README.md](docs/README.md).
 - **Created**: 2026-11-05T11:21:04+07:00
-- **Last Updated**: 2026-11-23T10:13:39+07:00
+- **Last Updated**: 2026-11-24T15:05:41+07:00
 
 ---
 
@@ -48,6 +48,8 @@ python -m venv .venv
 .venv\Scripts\activate          # Windows; Linux/macOS: source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+**Trên Kaggle:** không cài `requirements.txt` (bản ghim sẽ nâng thư viện của Kaggle) — xem [docs/phases/TRAINING.md](docs/phases/TRAINING.md) mục "Chạy trên Kaggle".
 
 ## 4. Lệnh chạy
 
