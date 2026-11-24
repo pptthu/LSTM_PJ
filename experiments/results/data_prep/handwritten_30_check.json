@@ -1,0 +1,90 @@
+{
+ "n_rows": 30,
+ "by_case_label": {
+  "mixed/0": 2,
+  "mixed/1": 3,
+  "negation/0": 2,
+  "negation/1": 3,
+  "negative/0": 5,
+  "out_of_domain/0": 2,
+  "out_of_domain/1": 3,
+  "positive/1": 5,
+  "sarcasm/0": 4,
+  "sarcasm/1": 1
+ },
+ "label_totals": {
+  "0": 15,
+  "1": 15
+ },
+ "scored_label_totals": {
+  "0": 13,
+  "1": 12
+ },
+ "words_min": 16,
+ "words_max": 24,
+ "ngram": 6,
+ "imdb_reviews_compared": 50000,
+ "rows_with_shared_ngram": 7,
+ "rows_exact_in_imdb": 0,
+ "overlap": [
+  {
+   "row": 3,
+   "case_type": "positive",
+   "shared_ngrams": [
+    "from the opening scene to the"
+   ],
+   "exact_in_imdb": false
+  },
+  {
+   "row": 5,
+   "case_type": "negative",
+   "shared_ngrams": [
+    "that make absolutely no sense i"
+   ],
+   "exact_in_imdb": false
+  },
+  {
+   "row": 6,
+   "case_type": "negative",
+   "shared_ngrams": [
+    "could have been an interesting story",
+    "what could have been an interesting"
+   ],
+   "exact_in_imdb": false
+  },
+  {
+   "row": 10,
+   "case_type": "negation",
+   "shared_ngrams": [
+    "is not a bad film at",
+    "it is not a bad film",
+    "not a bad film at all"
+   ],
+   "exact_in_imdb": false
+  },
+  {
+   "row": 12,
+   "case_type": "negation",
+   "shared_ngrams": [
+    "my attention from beginning to end"
+   ],
+   "exact_in_imdb": false
+  },
+  {
+   "row": 13,
+   "case_type": "negation",
+   "shared_ngrams": [
+    "the characters are not interesting the"
+   ],
+   "exact_in_imdb": false
+  },
+  {
+   "row": 14,
+   "case_type": "negation",
+   "shared_ngrams": [
+    "there is no reason to watch"
+   ],
+   "exact_in_imdb": false
+  }
+ ]
+}

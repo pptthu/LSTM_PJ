@@ -1,0 +1,31 @@
+text,label,case_type
+"Every scene feels carefully considered, and the lead actress delivers an emotional performance that made the entire story believable.",1,positive
+I loved how the director balanced humor and tension without making either feel forced. The final sequence was especially satisfying.,1,positive
+"The writing is sharp, the soundtrack fits every moment, and the supporting cast brings surprising depth to even the smallest roles.",1,positive
+"From the opening scene to the closing credits, the film kept me completely absorbed. I would happily watch it again.",1,positive
+Beautiful cinematography and genuinely thoughtful storytelling make this film feel fresh. Nothing about the experience felt unnecessary.,1,positive
+"The plot is painfully predictable, and the characters behave in ways that make absolutely no sense. I struggled to finish it.",0,negative
+"Flat dialogue, awkward editing, and lifeless performances turn what could have been an interesting story into a frustrating experience.",0,negative
+"I kept waiting for something meaningful to happen, but the film offered nothing beyond repetitive conversations and dull scenes.",0,negative
+"The soundtrack constantly overwhelms the dialogue, while the poorly developed characters make it impossible to care about their problems.",0,negative
+"Even the supposedly emotional moments feel artificial. The story lacks direction, and the ending only makes its problems more obvious.",0,negative
+"It is not a bad film at all; the performances are convincing, and the story has more emotional depth than I expected.",1,negation
+"I didn't enjoy the first half, but the second half completely changed my impression with its clever twists and satisfying conclusion.",1,negation
+"Never boring, never confusing, and surprisingly heartfelt, this film kept my attention from beginning to end.",1,negation
+"The characters are not interesting, the dialogue is not convincing, and there is no satisfying conclusion to hold the story together.",0,negation
+There is no reason to watch a film that spends nearly two hours repeating the same pointless conflict without developing anything.,0,negation
+"Wonderful, another film where every character shouts instead of having a conversation. The subtle writing must have been on vacation.",0,sarcasm
+"I especially loved the magical editing, where entire scenes seem to disappear without explanation. What a brilliant storytelling choice.",0,sarcasm
+Congratulations to the director for making a supposedly thrilling story feel like an extended waiting room. Truly an unforgettable achievement.,0,sarcasm
+Terrible news for my sleep schedule: I stayed up past 3 a.m. because I simply could not stop watching.,1,sarcasm
+What a delightful surprise: the ending ignores every question raised earlier and somehow manages to introduce even more confusion.,0,sarcasm
+"The lead actor is excellent and the visuals are impressive, but the repetitive plot makes the overall experience exhausting.",0,mixed
+"Although the opening is engaging and the soundtrack works beautifully, the weak final act leaves the story feeling incomplete.",0,mixed
+"The middle section drags and a few jokes fall flat, but the last twenty minutes are so moving that I left the theater smiling.",1,mixed
+"The beginning takes its time establishing the characters, but the emotional payoff is so rewarding that the patience feels worthwhile.",1,mixed
+"Despite a few awkward transitions, the clever dialogue and convincing performances make this an enjoyable film from start to finish.",1,mixed
+"The restaurant has a welcoming atmosphere, the staff are attentive, and every dish arrives fresh and beautifully prepared.",1,out_of_domain
+"My new phone handles multiple apps smoothly, takes crisp photos in low light, and lasts almost two days on a single charge.",1,out_of_domain
+"The hotel room was spotless, the bed was comfortable, and the reception team helped us resolve a booking issue immediately.",1,out_of_domain
+"The delivery arrived several days late, and the package was damaged despite the outer box appearing completely intact.",0,out_of_domain
+"This book promises practical advice but repeats basic ideas across every chapter, with confusing explanations and very few useful examples.",0,out_of_domain
