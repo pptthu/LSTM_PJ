@@ -6,7 +6,7 @@
 - **Detailed Plan**: Header; Goals; Input/Output; How to do it; Detailed plan / gotchas; Verification gates; Links.
 - **References**: [OVERVIEW.md](../OVERVIEW.md), [PURPOSE.md](../PURPOSE.md) §4 (M6), §7.
 - **Created**: 2026-11-05T11:21:04+07:00
-- **Last Updated**: 2026-11-24T15:05:41+07:00
+- **Last Updated**: 2026-11-24T16:23:47+07:00
 
 ---
 
@@ -30,7 +30,7 @@
 
 - **Input:** `data/processed/reviews.parquet` (Bảo), `configs/<exp>.yaml`.
 - **Output:**
-  - `experiments/runs/<exp>/seed_<s>/history.csv` (log từng epoch, xem mục Monitor).
+  - `experiments/runs/<exp>/seed_<s>/history.csv` (log từng epoch, xem mục Monitor). `runs/` nằm trong `.gitignore` → **chép thêm một bản sang `experiments/results/<exp>/seed_<s>/history.csv` để commit**; notebook trình bày đọc bản này.
   - `experiments/checkpoints/<exp>/vocab.json`, `experiments/checkpoints/<exp>/seed_<s>/best.pt` (không commit).
   - `experiments/results/<exp>/seed_<s>/metrics.json` (val), `experiments/results/<exp>/summary.json` (mean ± std 3 seed).
   - `experiments/plots/training/<exp>_curves.png` (commit).

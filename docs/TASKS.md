@@ -6,7 +6,7 @@
 - **Detailed Plan**: §1 Đã làm được; §2 Chưa làm được; §3 Task từng người; §4 File bàn giao; §5 Mốc kiểm tra; §6 Luật chung.
 - **References**: [OVERVIEW.md](OVERVIEW.md) (12 module), [PURPOSE.md](PURPOSE.md) §10, [phases/](phases/).
 - **Created**: 2026-11-23T10:12:39+07:00
-- **Last Updated**: 2026-11-24T15:37:09+07:00
+- **Last Updated**: 2026-11-24T16:23:47+07:00
 
 ---
 
@@ -29,6 +29,7 @@
 | B4: `sample_100.csv` (Bảo) | `src/data/sample.py` → 100 review test (50/50), có rating 4/7, phủ định, ngắn, dài; tất định seed 42; `tests/test_sample.py` 7 test |
 | B5: baseline M0a/M0b (Bảo) | `python -m src.models.baseline` → M0a val acc 0,4994; M0b `C=10` val acc 0,8985, macro-F1 0,8985, AUC 0,9623; `experiments/results/baseline/`; [EXP_01](experiments/EXP_01_BASELINE.md) |
 | T1: 30 câu tự viết (Thư) | `data/sample/handwritten_30.csv` — 6 nhóm × 5, nhãn 15/15; AI soạn nháp, Thư duyệt nhãn; 0 câu trùng nguyên văn IMDb (`experiments/results/data_prep/handwritten_30_check.json`) |
+| T4: khung notebook trình bày (Thư) | `notebooks/presentation.ipynb` — 10 section theo 7 mục báo cáo; chạy hết không lỗi; section 2, 3, 9 đã có số (EDA, baseline, demo tạm bằng baseline); section 4–8 tự hiện số khi có file của Đại/T2/T3 |
 
 ## 2. Chưa làm được
 
