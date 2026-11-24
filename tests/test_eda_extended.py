@@ -88,6 +88,7 @@ def test_quality_issues_flags_leak_and_label_conflict():
 def test_quality_issues_flags_missing_values():
     train = frame([("t1", "train", "ok text", "ok text", 1, 9, "tt1")])
     train.loc[0, "text_clean"] = None
+    train.loc[0, "text"] = None
     issues = quality_issues({"train": train}).set_index(["scope", "split", "check"])["count"].sort_index()
     assert issues[("split", "train", "ô bị thiếu (NaN) ở cột bắt buộc")] == 1
 
