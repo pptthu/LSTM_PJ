@@ -15,7 +15,7 @@
 - **Title:** Huấn luyện
 - **Date created:** 2026-11-05
 - **Last updated:** 2026-11-23
-- **Status:** To Do
+- **Status:** In Progress (D4 code + test xong; chờ chạy D5–D7 trên Colab)
 - **Owner:** Đại
 - **Hạn:** T3 24/11 — mốc dừng 14:00: chưa xong 5 cấu hình × 3 seed thì bỏ attention pooling
 - **Phase doc:** [../phases/TRAINING.md](../phases/TRAINING.md)
@@ -24,15 +24,16 @@
 
 Chỉ đánh dấu `[x]` khi có bằng chứng (lệnh, đường dẫn output, commit).
 
-- [ ] Đọc xong đặc tả phase
-- [ ] Code chạy được trên tập con
-- [ ] Verification gates trong phase doc đều pass
+- [x] Đọc xong đặc tả phase
+- [x] Code chạy được trên tập con (`pytest tests/test_train_monitor.py`)
+- [ ] Verification gates trên dữ liệu thật (Colab) đều pass
 - [ ] Đủ 3 seed (42, 123, 2025) cho mỗi cấu hình, có `summary.json`
 - [ ] Cập nhật tài liệu liên quan (experiments/README.md)
 
 ## Log
 
 - 2026-11-05: Tạo file.
+- 2026-11-25: Hoàn thiện `src/train.py`, `src/training/monitor.py`, `src/utils/seed.py`, 6 file `configs/*.yaml` và `notebooks/colab_d1_d8.ipynb`. Ghi `history.csv` đồng thời vào `runs/` và `results/`, lấy mẫu cân bằng lớp khi chạy thử `sample_size`, lọc tham số `requires_grad` cho M4a, tính `macro_f1`. Chờ chạy thực nghiệm dữ liệu thật trên Colab.
 
 ## Blockers
 

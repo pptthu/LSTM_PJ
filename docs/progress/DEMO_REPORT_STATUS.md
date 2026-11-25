@@ -15,7 +15,7 @@
 - **Title:** Demo, README, báo cáo & slide
 - **Date created:** 2026-11-05
 - **Last updated:** 2026-11-23
-- **Status:** To Do
+- **Status:** In Progress (B6 code + test xong; chờ checkpoint thật từ Colab)
 - **Owner:** Bảo (demo Gradio); Thư (README, notebook, báo cáo PDF tiếng Việt + tiếng Anh, slide)
 - **Hạn:** T4 25/11 — nộp trước 14:00
 - **Phase doc:** [../phases/DEMO_REPORT.md](../phases/DEMO_REPORT.md)
@@ -24,14 +24,15 @@
 
 Chỉ đánh dấu `[x]` khi có bằng chứng (lệnh, đường dẫn output, commit).
 
-- [ ] Đọc xong đặc tả phase
-- [ ] Code chạy được trên tập con
-- [ ] Verification gates trong phase doc đều pass
+- [x] Đọc xong đặc tả phase
+- [x] Code chạy được trên tập con (`pytest tests/test_predict_demo.py`)
+- [ ] Verification gates trên dữ liệu thật (sau khi có checkpoint Colab) đều pass
 - [ ] Cập nhật tài liệu liên quan (README.md, REPORT_CHECKLIST.md)
 
 ## Log
 
 - 2026-11-05: Tạo file.
+- 2026-11-25: Hoàn thiện `src/predict.py` (làm sạch `<br />`, hàm `predict(text)`, occlusion theo batch trên CPU < 1s) và `src/demo/app.py` (giao diện Gradio nạp ví dụ từ `handwritten_30.csv` & `sample_100.csv`).
 
 ## Blockers
 

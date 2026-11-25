@@ -1,0 +1,25 @@
+# M1: LSTM 1 chiều học từ đầu
+model:
+  rnn_type: "lstm"
+  bidirectional: false
+  embed_dim: 100
+  hidden_dim: 128
+  num_layers: 1
+  dropout: 0.5
+  pooling: "last"
+  use_pretrained_embeddings: false
+  freeze_embeddings: false
+
+data:
+  max_len: 250
+  batch_size: 64
+  min_freq: 2
+  max_vocab_size: 25000
+  truncation: "post"
+
+training:
+  lr: 0.001
+  weight_decay: 0.00001
+  max_epochs: 20
+  patience: 3
+  clip_grad_norm: 5.0

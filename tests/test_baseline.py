@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.models.baseline import compute_metrics, fit_tfidf_lr, majority_baseline
+from src.models.baseline import compute_metrics, evaluate_baseline_on_test, fit_tfidf_lr, majority_baseline
 
 
 def make_corpus(n=120, seed=0):
@@ -75,3 +75,21 @@ def test_missing_text_column_raises():
     train = make_corpus().drop(columns=["text_clean"])
     with pytest.raises(ValueError, match="missing"):
         fit_tfidf_lr(train, make_corpus(), verbose=False)
+
+
+def test_evaluate_baseline_on_test_isolated(tmp_path):
+    tr = make_corpus(60, seed=1).assign(split="train")
+    va = make_corpus(20, seed=2).assign(split="val")
+    te = make_corpus(20, seed=3).assign(split="test")
+    pq = tmp_path / "reviews.parquet"
+    pd.concat([tr, va, te], ignore_index=True).to_parquet(pq, index=False)
+
+    res_dir = tmp_path / "results"
+    ckpt = tmp_path / "baseline_tfidf_lr.joblib"
+    out = evaluate_baseline_on_test(parquet_path=str(pq), checkpoint_path=str(ckpt), results_dir=str(res_dir))
+    assert "M0a_majority" in out and "M0b_tfidf_lr" in out
+    pred_csv = res_dir / "predictions_test.csv"
+    assert pred_csv.exists() and (res_dir / "test_metrics.json").exists()
+    pred_df = pd.read_csv(pred_csv)
+    assert len(pred_df) == 20
+    assert {"uid", "text", "label", "rating", "prob", "pred", "n_tokens", "n_unk", "was_truncated"} <= set(pred_df.columns)
