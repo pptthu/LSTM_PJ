@@ -35,6 +35,16 @@ def test_mcnemar_test_exact_and_chi2():
     assert "exact_p_value" in res and "chi2_p_value" in res
     assert res["contingency_table"]["total"] == 8
 
+    # Khi sự khác biệt có ý nghĩa thống kê (p < 0.05) và B đúng nhiều hơn A -> câu kết luận nêu rõ B tốt hơn A
+    y_t2 = np.ones(20, dtype=int)
+    pred_a2 = np.array([1] * 2 + [0] * 18)
+    pred_b2 = np.array([0] * 2 + [1] * 18)
+    sig_res = mcnemar_test(y_t2, pred_a2, pred_b2, "BiLSTM", "Baseline_LR")
+    assert sig_res["significant_p05"] is True
+    assert sig_res["better_model"] == "Baseline_LR"
+    assert "Baseline_LR tốt hơn BiLSTM" in sig_res["interpretation"]
+    assert "18 so với 2" in sig_res["interpretation"]
+
 
 def test_evaluate_split_pipeline_isolated_in_tmp_dir():
     with tempfile.TemporaryDirectory() as tmp_dir:
@@ -100,18 +110,26 @@ def test_compare_all_models_reads_b5_nested_baseline_and_mcnemar_sorts_uids():
             encoding="utf-8",
         )
 
-        lstm_s42 = res_base / "lstm" / "seed_42"
-        lstm_s42.mkdir(parents=True)
-        (lstm_s42 / "metrics.json").write_text(
-            json.dumps({"best_val_acc": 0.86, "val_f1_at_best": 0.86, "total_train_seconds": 12.0, "parameters": {"total": 1000, "trainable": 1000}}),
-            encoding="utf-8",
-        )
+        for s, acc in [(42, 0.80), (123, 0.85), (2025, 0.90)]:
+            lstm_s = res_base / "lstm" / f"seed_{s}"
+            lstm_s.mkdir(parents=True)
+            (lstm_s / "metrics.json").write_text(
+                json.dumps({"best_val_acc": acc, "val_f1_at_best": acc, "total_train_seconds": 12.0, "parameters": {"total": 1000, "trainable": 1000}}),
+                encoding="utf-8",
+            )
+        # Thư mục pilot_ không được lọt vào bảng so sánh chính
+        pilot_s = res_base / "pilot_lstm" / "seed_42"
+        pilot_s.mkdir(parents=True)
+        (pilot_s / "metrics.json").write_text(json.dumps({"best_val_acc": 0.84}), encoding="utf-8")
 
         comp = compare_all_models(results_base=res_base, split="val", include_lab3_reference=False)
         models = comp["model"].tolist()
         assert "M0a_majority" in models
         assert "M0b_tfidf_lr (C=10)" in models
         assert "lstm" in models
+        assert "pilot_lstm" not in models
+        lstm_row = comp[comp["model"] == "lstm"].iloc[0]
+        assert lstm_row["accuracy"] == "85.00 ± 5.00%"
 
         # Kiểm tra run_mcnemar_cli tự khớp uid dù thứ tự dòng ngược nhau
         f_a = res_base / "a.csv"

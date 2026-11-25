@@ -300,7 +300,11 @@ def compare_all_models(
     skip_dirs = {"data_prep", "eda", "error_analysis"}
 
     for exp_dir in sorted(base.iterdir()):
-        if not exp_dir.is_dir() or exp_dir.name in skip_dirs:
+        if (
+            not exp_dir.is_dir()
+            or exp_dir.name in skip_dirs
+            or exp_dir.name.startswith(("pilot_", "maxlen_"))
+        ):
             continue
         exp_name = exp_dir.name
         seed_dirs = sorted(exp_dir.glob("seed_*"))
@@ -350,9 +354,11 @@ def compare_all_models(
 
         if seed_accs:
             acc_mean = float(np.mean(seed_accs))
-            acc_std = float(np.std(seed_accs))
+            acc_ddof = 1 if len(seed_accs) > 1 else 0
+            acc_std = float(np.std(seed_accs, ddof=acc_ddof))
             f1_mean = float(np.mean(seed_f1s)) if seed_f1s else None
-            f1_std = float(np.std(seed_f1s)) if seed_f1s else None
+            f1_ddof = 1 if len(seed_f1s) > 1 else 0
+            f1_std = float(np.std(seed_f1s, ddof=f1_ddof)) if seed_f1s else None
             auc_mean = float(np.mean(seed_aucs)) if seed_aucs else None
             lat_mean = round(float(np.mean(seed_latencies)), 3) if seed_latencies else None
             train_time_mean = round(float(np.mean(seed_train_times)), 1) if seed_train_times else None

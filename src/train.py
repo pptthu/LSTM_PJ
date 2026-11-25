@@ -207,7 +207,8 @@ def run_training(
     plots_dir.mkdir(parents=True, exist_ok=True)
 
     # 5. Quản lý Từ vựng (Vocab) — Xây dựng CHỈ từ train
-    vocab_path = ckpt_dir / "vocab.json"
+    # Khi chạy thử với sample_size, lưu vocab tách riêng vào run_dir để không ghi đè checkpoints/<exp>/vocab.json
+    vocab_path = (run_dir / "vocab.json") if sample_size is not None else (ckpt_dir / "vocab.json")
     data_cfg = config.get("data", {})
     min_freq = data_cfg.get("min_freq", 2)
     max_vocab_size = data_cfg.get("max_vocab_size", 25000)
@@ -219,6 +220,7 @@ def run_training(
         logger.info(f"Xây dựng từ vựng từ {len(train_df)} review train...")
         train_tokens = [tokenize(text) for text in train_df["text_clean"]]
         vocab = Vocab.build_from_tokens(train_tokens, min_freq=min_freq, max_size=max_vocab_size)
+        vocab_path.parent.mkdir(parents=True, exist_ok=True)
         vocab.save(vocab_path)
         logger.info(f"Đã lưu từ vựng ({len(vocab)} từ) vào {vocab_path}")
 

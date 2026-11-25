@@ -222,7 +222,8 @@ def aggregate_experiment_seeds(
         vals = [m[k] for m in metrics_list if k in m and m[k] is not None]
         if vals:
             mean_val = float(np.mean(vals))
-            std_val = float(np.std(vals))
+            ddof = 1 if len(vals) > 1 else 0
+            std_val = float(np.std(vals, ddof=ddof))
             summary[k] = {
                 "mean": round(mean_val, 4),
                 "std": round(std_val, 4),
