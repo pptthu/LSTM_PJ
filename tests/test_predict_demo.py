@@ -2,6 +2,7 @@
 import tempfile
 import time
 from pathlib import Path
+import pytest
 
 from src.data.vocab import Vocab
 from src.demo.app import analyze_review, build_demo, load_demo_examples
@@ -38,8 +39,14 @@ def test_sentiment_predictor_cleans_html_and_runs_fast_occlusion():
         assert "ms" in speed_str
 
 
-def test_load_demo_examples_and_build_gradio_blocks():
+def test_load_demo_examples():
     examples = load_demo_examples()
     assert len(examples) >= 2
+
+
+def test_build_gradio_blocks(monkeypatch):
+    monkeypatch.setenv("GRADIO_ANALYTICS_ENABLED", "False")
+    gradio = pytest.importorskip("gradio")
+    assert gradio is not None
     demo = build_demo()
     assert demo is not None

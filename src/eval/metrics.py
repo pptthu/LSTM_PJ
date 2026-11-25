@@ -146,9 +146,31 @@ def mcnemar_test(
         chi2_pval = float(stats.chi2.sf(stat, df=1))
         exact_pval = float(stats.binomtest(min(b, c), n=discordant, p=0.5, alternative="two-sided").pvalue)
 
+    if exact_pval < 0.05:
+        if b > c:
+            better_model, worse_model, win_cnt, lose_cnt = model_a_name, model_b_name, b, c
+        else:
+            better_model, worse_model, win_cnt, lose_cnt = model_b_name, model_a_name, c, b
+        interpretation = (
+            f"{better_model} tốt hơn {worse_model} có ý nghĩa thống kê "
+            f"(p = {exact_pval:.6f} < 0.05; đúng riêng {win_cnt} so với {lose_cnt} mẫu)"
+        )
+    else:
+        if b > c:
+            trend = f"{model_a_name} đúng riêng nhiều hơn ({b} so với {c} mẫu)"
+        elif c > b:
+            trend = f"{model_b_name} đúng riêng nhiều hơn ({c} so với {b} mẫu)"
+        else:
+            trend = f"hai mô hình có số mẫu đúng riêng bằng nhau ({b} = {c})"
+        interpretation = (
+            f"Không đủ bằng chứng kết luận sự khác biệt có ý nghĩa thống kê giữa "
+            f"{model_a_name} và {model_b_name} (p = {exact_pval:.6f} >= 0.05; {trend})"
+        )
+
     return {
         "model_a": model_a_name,
         "model_b": model_b_name,
+        "better_model": model_a_name if b > c else (model_b_name if c > b else "tie"),
         "contingency_table": {
             "both_correct": n_both_correct,
             "a_correct_b_wrong": b,
@@ -162,9 +184,5 @@ def mcnemar_test(
         "chi2_p_value": round(chi2_pval, 6),
         "significant_p05": bool(exact_pval < 0.05),
         "significant_p01": bool(exact_pval < 0.01),
-        "interpretation": (
-            f"Sự khác biệt giữa {model_a_name} và {model_b_name} có ý nghĩa thống kê (p < 0.05)"
-            if exact_pval < 0.05
-            else f"Không đủ bằng chứng kết luận sự khác biệt giữa {model_a_name} và {model_b_name} (p >= 0.05)"
-        ),
+        "interpretation": interpretation,
     }
