@@ -183,7 +183,7 @@ def build_config(vectorizer: TfidfVectorizer, model: LogisticRegression, seed: i
     }
 
 
-def _predict_frame(df: pd.DataFrame, prob, pred) -> pd.DataFrame:
+def _predict_frame(df: pd.DataFrame, prob, pred, include_token_stats: bool = False) -> pd.DataFrame:
     out = pd.DataFrame({
         "uid": df["uid"].values,
         "text": df["text"].values,
@@ -192,18 +192,124 @@ def _predict_frame(df: pd.DataFrame, prob, pred) -> pd.DataFrame:
         "prob": np.round(np.asarray(prob, dtype=float), 6),
         "pred": np.asarray(pred, dtype=int),
     })
+    if include_token_stats:
+        from src.data.tokenizer import tokenize
+
+        text_col = df[TEXT_COLUMN] if TEXT_COLUMN in df.columns else df["text"]
+        out["n_tokens"] = [len(tokenize(t)) for t in text_col]
+        out["n_unk"] = 0
+        out["was_truncated"] = False
     return out
 
 
+def evaluate_baseline_on_test(
+    parquet_path: str | None = None,
+    checkpoint_path: str | None = None,
+    results_dir: str | None = None,
+) -> dict:
+    """Đánh giá M0a (Majority) và M0b (TF-IDF + LR đã chốt trên val) MỘT LẦN trên tập test (cho D8).
+
+    Nếu chưa có `baseline_tfidf_lr.joblib` (vì không commit), hàm tự fit lại trên train với đúng
+    `selected_C` từ `experiments/results/baseline/config.json` (hoặc quét lại trên val nếu chưa có).
+    """
+    from pathlib import Path
+
+    pq = Path(parquet_path) if parquet_path else (data_dir("processed") / "reviews.parquet")
+    if not pq.exists():
+        raise FileNotFoundError(f"Chưa có {pq} — chạy `python -m src.data.prepare` trước (B1).")
+
+    df = pd.read_parquet(pq)
+    train = df[df["split"] == "train"].reset_index(drop=True)
+    val = df[df["split"] == "val"].reset_index(drop=True)
+    test = df[df["split"] == "test"].reset_index(drop=True)
+
+    res_dir = Path(results_dir) if results_dir else experiment_dir("results", "baseline")
+    res_dir.mkdir(parents=True, exist_ok=True)
+    ckpt = Path(checkpoint_path) if checkpoint_path else (experiment_dir("checkpoints") / "baseline_tfidf_lr.joblib")
+
+    # 1. M0a Majority trên test
+    majority_cls = int(train["label"].value_counts().idxmax())
+    m0a_test_pred = np.full(len(test), majority_cls, dtype=int)
+    m0a_test_prob = np.full(len(test), float(majority_cls), dtype=float)
+    m0a_test_metrics = compute_metrics(test["label"], m0a_test_pred, m0a_test_prob)
+
+    # 2. Nạp hoặc dựng lại M0b với C đã chốt trên val (tuyệt đối không chọn C trên test)
+    if ckpt.exists():
+        bundle = joblib.load(ckpt)
+        vectorizer = bundle["vectorizer"]
+        model = bundle.get("model") or bundle.get("classifier")
+        best_c = float(model.C)
+    else:
+        cfg_file = res_dir / "config.json"
+        if cfg_file.exists():
+            saved_cfg = json.loads(cfg_file.read_text(encoding="utf-8"))
+            best_c = float(saved_cfg.get("selected_C", 10.0))
+            vectorizer = TfidfVectorizer(ngram_range=(1, 2), min_df=2, sublinear_tf=False)
+            x_tr = vectorizer.fit_transform(train[TEXT_COLUMN])
+            model = LogisticRegression(C=best_c, solver="liblinear", max_iter=1000, random_state=RANDOM_STATE)
+            model.fit(x_tr, train["label"])
+        else:
+            vectorizer, model, _, best_c, _, _ = fit_tfidf_lr(train, val, verbose=False)
+        ckpt.parent.mkdir(parents=True, exist_ok=True)
+        joblib.dump({"vectorizer": vectorizer, "model": model, "config": build_config(vectorizer, model, RANDOM_STATE)}, ckpt)
+
+    t0 = time.perf_counter()
+    x_test = vectorizer.transform(test[TEXT_COLUMN])
+    prob_test = model.predict_proba(x_test)[:, 1]
+    pred_test = (prob_test >= 0.5).astype(int)
+    infer_ms = (time.perf_counter() - t0) * 1000.0
+
+    m0b_test_metrics = compute_metrics(test["label"], pred_test, prob_test)
+    n_params = int(len(vectorizer.vocabulary_)) + 1
+
+    # Ghi dự đoán test đủ 9 cột bàn giao (TASKS.md §4)
+    pred_df = _predict_frame(test, prob_test, pred_test, include_token_stats=True)
+    pred_df.to_csv(res_dir / "predictions_test.csv", index=False)
+
+    payload = {
+        "M0a_majority": {
+            "majority_class": majority_cls,
+            "test": m0a_test_metrics,
+        },
+        "M0b_tfidf_lr": {
+            "selected_C": best_c,
+            "parameters": {"total": n_params, "trainable": n_params},
+            "inference_ms_per_review": round(infer_ms / max(1, len(test)), 4),
+            "test": m0b_test_metrics,
+        },
+    }
+    (res_dir / "test_metrics.json").write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8")
+    return payload
+
+
 def main() -> None:
+    import argparse
     import sys
 
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
+    parser = argparse.ArgumentParser(description="Baseline M0a (Majority) & M0b (TF-IDF + LR).")
+    parser.add_argument(
+        "--eval-test",
+        action="store_true",
+        help="Chỉ bật ở phase EVAL (D8): đánh giá mô hình đã chốt một lần trên tập test.",
+    )
+    args = parser.parse_args()
+
     parquet = data_dir("processed") / "reviews.parquet"
     if not parquet.exists():
         raise SystemExit(f"Chưa có {parquet} — chạy `python -m src.data.prepare` trước (B1).")
+
+    if args.eval_test:
+        res = evaluate_baseline_on_test(parquet_path=str(parquet))
+        m0a_acc = res["M0a_majority"]["test"]["accuracy"]
+        m0b = res["M0b_tfidf_lr"]["test"]
+        print(f"M0a Majority test acc = {m0a_acc:.4f}")
+        print(f"M0b TF-IDF + LR (C={res['M0b_tfidf_lr']['selected_C']:g}) test acc = {m0b['accuracy']:.4f}"
+              f" · macro-F1 = {m0b['macro_f1']:.4f} · ROC-AUC = {m0b['roc_auc']:.4f}")
+        print(f"Đã ghi: {experiment_dir('results', 'baseline')}/{{test_metrics.json,predictions_test.csv}}")
+        return
     df = pd.read_parquet(parquet)
     # Chỉ đọc train/val. Không đọc test: baseline không được đánh giá trên test (BASELINE.md).
     train = df[df["split"] == "train"].reset_index(drop=True)

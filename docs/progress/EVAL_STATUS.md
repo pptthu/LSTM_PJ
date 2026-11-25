@@ -15,7 +15,7 @@
 - **Title:** Đánh giá, phân tích lỗi & giải thích mô hình
 - **Date created:** 2026-11-05
 - **Last updated:** 2026-11-23
-- **Status:** To Do
+- **Status:** In Progress (D8 code + test xong; chờ kết quả chạy Colab)
 - **Owner:** Đại (chạy test một lần, metric, McNemar, xuất file dự đoán); Thư (phân tích lỗi, giải thích mô hình, giới hạn)
 - **Hạn:** T3 24/11 tối
 - **Phase doc:** [../phases/EVAL.md](../phases/EVAL.md)
@@ -24,14 +24,15 @@
 
 Chỉ đánh dấu `[x]` khi có bằng chứng (lệnh, đường dẫn output, commit).
 
-- [ ] Đọc xong đặc tả phase
-- [ ] Code chạy được trên tập con
-- [ ] Verification gates trong phase doc đều pass
+- [x] Đọc xong đặc tả phase
+- [x] Code chạy được trên tập con (`pytest tests/test_eval.py`)
+- [ ] Verification gates trên dữ liệu thật (Colab) đều pass
 - [ ] Cập nhật tài liệu liên quan (experiments/README.md, REPORT_CHECKLIST.md)
 
 ## Log
 
 - 2026-11-05: Tạo file.
+- 2026-11-25: Hoàn thiện `src/eval/metrics.py` (kèm McNemar chính xác nhị thức), `src/evaluate.py` (tương thích cấu trúc baseline của B5, báo cáo thêm kết quả bỏ 123 review test trùng train, CLI đầy đủ) và nhánh `--eval-test` trong `src/models/baseline.py`.
 
 ## Blockers
 

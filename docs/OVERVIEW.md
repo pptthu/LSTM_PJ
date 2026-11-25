@@ -16,12 +16,12 @@ Hạn nộp: **thứ 4, 25/11/2026, trước 14:00**. Mốc theo [PURPOSE.md](PU
 
 | # | Phase | Đặc tả | Tiến độ | Người chính | Hạn | Trạng thái |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | Chuẩn bị dữ liệu & split | [DATA_PREP](phases/DATA_PREP.md) | [status](progress/DATA_PREP_STATUS.md) | Bảo | T2 23/11 tối | To Do |
-| 2 | Baseline Majority + TF-IDF + LR | [BASELINE](phases/BASELINE.md) | [status](progress/BASELINE_STATUS.md) | Bảo | T2 23/11 tối | To Do |
-| 3 | Định nghĩa mô hình | [MODEL](phases/MODEL.md) | [status](progress/MODEL_STATUS.md) | Đại | T2 23/11 tối | To Do |
-| 4 | Huấn luyện (3 seed) | [TRAINING](phases/TRAINING.md) | [status](progress/TRAINING_STATUS.md) | Đại | T3 24/11, mốc dừng 14:00 | To Do |
-| 5 | Đánh giá, phân tích lỗi, giải thích | [EVAL](phases/EVAL.md) | [status](progress/EVAL_STATUS.md) | Đại (test), Thư (phân tích lỗi) | T3 24/11 tối | To Do |
-| 6 | Demo, README, báo cáo & slide | [DEMO_REPORT](phases/DEMO_REPORT.md) | [status](progress/DEMO_REPORT_STATUS.md) | Bảo (demo), Thư (báo cáo) | T4 25/11 trước 14:00 | To Do |
+| 1 | Chuẩn bị dữ liệu & split | [DATA_PREP](phases/DATA_PREP.md) | [status](progress/DATA_PREP_STATUS.md) | Bảo | T2 23/11 tối | Done (B1–B4) |
+| 2 | Baseline Majority + TF-IDF + LR | [BASELINE](phases/BASELINE.md) | [status](progress/BASELINE_STATUS.md) | Bảo | T2 23/11 tối | Done (val; test ở D8) |
+| 3 | Định nghĩa mô hình | [MODEL](phases/MODEL.md) | [status](progress/MODEL_STATUS.md) | Đại | T2 23/11 tối | In Progress (D1–D2 xong code+test; D3 chờ `.npy` thật) |
+| 4 | Huấn luyện (3 seed) | [TRAINING](phases/TRAINING.md) | [status](progress/TRAINING_STATUS.md) | Đại | T3 24/11, mốc dừng 14:00 | In Progress (D4 xong code+test; chờ chạy Colab) |
+| 5 | Đánh giá, phân tích lỗi, giải thích | [EVAL](phases/EVAL.md) | [status](progress/EVAL_STATUS.md) | Đại (test), Thư (phân tích lỗi) | T3 24/11 tối | In Progress (D8 xong code+test; chờ chạy Colab) |
+| 6 | Demo, README, báo cáo & slide | [DEMO_REPORT](phases/DEMO_REPORT.md) | [status](progress/DEMO_REPORT_STATUS.md) | Bảo (demo), Thư (báo cáo) | T4 25/11 trước 14:00 | In Progress (B6, T4 xong code khung) |
 
 ## 2. Phần mở rộng (chia mức theo chi phí; Thư chốt 23/11: giữ hết, tốn thời gian quá thì để sau)
 
