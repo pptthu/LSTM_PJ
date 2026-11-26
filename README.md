@@ -76,7 +76,19 @@ python -m src.demo.app                                         # dự kiến
 
 ## 5. Kết quả
 
-TBD — điền từ `experiments/results/` sau khi chạy (mean ± std 3 seed). Bảng so sánh: [docs/experiments/README.md](docs/experiments/README.md).
+Test IMDb 25.000 review, mean ± std 3 seed, `max_len` = 400 (chốt ở pilot D5). Chọn mô hình theo val; test chạy một lần. Bảng đầy đủ: [docs/experiments/README.md](docs/experiments/README.md).
+
+| Mô hình | Val acc | Test acc | Test macro-F1 |
+| :--- | :--- | :--- | :--- |
+| M0b TF-IDF + LR (baseline) | 89,85% | **89,94%** | 0,8994 |
+| M1 LSTM (đề bài) | 86,09 ± 0,33% | 86,48 ± 0,32% | 0,8648 |
+| M2 GRU (**chọn theo val**) | **88,27 ± 0,45%** | 88,16 ± 0,18% | 0,8816 |
+| M3 BiLSTM | 86,29 ± 0,93% | 86,53 ± 0,45% | 0,8652 |
+| M4a BiLSTM + GloVe (đóng băng) | 87,76 ± 0,31% | 87,87 ± 0,29% | 0,8787 |
+| M4b BiLSTM + GloVe (fine-tune) | 86,70 ± 0,65% | 86,72 ± 0,34% | 0,8670 |
+| E1 BiLSTM + attention | 88,26 ± 0,58% | 88,28 ± 0,16% | 0,8828 |
+
+Baseline TF-IDF + LR vẫn hơn mô hình RNN tốt nhất, có ý nghĩa thống kê (McNemar, `experiments/results/mcnemar.json`). Phân tích lỗi: `experiments/results/error_analysis/`; giải thích mô hình: `experiments/results/explain/`.
 
 ## 6. Tài liệu
 
