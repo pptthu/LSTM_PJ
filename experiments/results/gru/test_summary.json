@@ -1,0 +1,20 @@
+{
+  "exp_name": "gru",
+  "split": "test",
+  "n_seeds": 3,
+  "accuracy": {
+    "mean": 0.8816,
+    "std": 0.0018
+  },
+  "macro_f1": {
+    "mean": 0.8816,
+    "std": 0.0018
+  },
+  "roc_auc": {
+    "mean": 0.9499
+  },
+  "total_params": 2588449,
+  "trainable_params": 2588449,
+  "train_time_s_mean": 122.8,
+  "latency_ms_sample_mean": 0.315
+}

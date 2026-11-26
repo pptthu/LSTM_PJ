@@ -1,0 +1,39 @@
+{
+  "exp_name": "gru",
+  "n_seeds": 3,
+  "seeds": [
+    42,
+    123,
+    2025
+  ],
+  "parameters": {
+    "total": 2588449,
+    "trainable": 2588449,
+    "embedding_trainable": true
+  },
+  "best_val_acc": {
+    "mean": 0.8827,
+    "std": 0.0045,
+    "formatted": "88.27 ± 0.45%"
+  },
+  "val_loss_at_best": {
+    "mean": 0.3372,
+    "std": 0.0046,
+    "formatted": "0.3372 ± 0.0046"
+  },
+  "val_f1_at_best": {
+    "mean": 0.8827,
+    "std": 0.0045,
+    "formatted": "88.27 ± 0.45%"
+  },
+  "train_acc_at_best": {
+    "mean": 0.9621,
+    "std": 0.0079,
+    "formatted": "96.21 ± 0.79%"
+  },
+  "total_train_seconds": {
+    "mean": 122.8,
+    "std": 6.9049,
+    "formatted": "122.8000 ± 6.9049"
+  }
+}

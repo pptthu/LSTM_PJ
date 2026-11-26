@@ -1,0 +1,39 @@
+{
+  "exp_name": "bilstm_glove_frozen",
+  "n_seeds": 3,
+  "seeds": [
+    42,
+    123,
+    2025
+  ],
+  "parameters": {
+    "total": 2735777,
+    "trainable": 235777,
+    "embedding_trainable": false
+  },
+  "best_val_acc": {
+    "mean": 0.8776,
+    "std": 0.0031,
+    "formatted": "87.76 ± 0.31%"
+  },
+  "val_loss_at_best": {
+    "mean": 0.3137,
+    "std": 0.0105,
+    "formatted": "0.3137 ± 0.0105"
+  },
+  "val_f1_at_best": {
+    "mean": 0.8775,
+    "std": 0.0031,
+    "formatted": "87.75 ± 0.31%"
+  },
+  "train_acc_at_best": {
+    "mean": 0.9212,
+    "std": 0.0193,
+    "formatted": "92.12 ± 1.93%"
+  },
+  "total_train_seconds": {
+    "mean": 227.3933,
+    "std": 37.7362,
+    "formatted": "227.3933 ± 37.7362"
+  }
+}

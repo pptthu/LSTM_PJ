@@ -1,0 +1,37 @@
+{
+  "exp_name": "pilot_lstm_ml250",
+  "n_seeds": 1,
+  "seeds": [
+    42
+  ],
+  "parameters": {
+    "total": 2617889,
+    "trainable": 2617889,
+    "embedding_trainable": true
+  },
+  "best_val_acc": {
+    "mean": 0.8374,
+    "std": 0.0,
+    "formatted": "83.74 ± 0.00%"
+  },
+  "val_loss_at_best": {
+    "mean": 0.4422,
+    "std": 0.0,
+    "formatted": "0.4422 ± 0.0000"
+  },
+  "val_f1_at_best": {
+    "mean": 0.8374,
+    "std": 0.0,
+    "formatted": "83.74 ± 0.00%"
+  },
+  "train_acc_at_best": {
+    "mean": 0.9465,
+    "std": 0.0,
+    "formatted": "94.65 ± 0.00%"
+  },
+  "total_train_seconds": {
+    "mean": 138.7,
+    "std": 0.0,
+    "formatted": "138.7000 ± 0.0000"
+  }
+}

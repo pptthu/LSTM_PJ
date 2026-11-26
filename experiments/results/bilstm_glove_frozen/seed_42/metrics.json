@@ -1,0 +1,21 @@
+{
+  "exp_name": "bilstm_glove_frozen",
+  "seed": 42,
+  "best_epoch": 12,
+  "stopped_epoch": 15,
+  "best_val_acc": 0.8767,
+  "total_train_seconds": 232.56,
+  "hardware": "Tesla T4",
+  "parameters": {
+    "total": 2735777,
+    "trainable": 235777,
+    "embedding_trainable": false
+  },
+  "val_loss_at_best": 0.314,
+  "val_f1_at_best": 0.8765,
+  "train_acc_at_best": 0.9273,
+  "train_loss_at_best": 0.1898,
+  "overfit_gap_at_best": 0.0506,
+  "min_val_loss_epoch": 7,
+  "min_val_loss": 0.2969
+}

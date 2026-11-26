@@ -1,0 +1,64 @@
+{
+  "split": "test",
+  "checkpoint": "/kaggle/tmp/LSTM_PJ/experiments/checkpoints/bilstm_glove_frozen/seed_42/best.pt",
+  "parameters": {
+    "total": 2735777,
+    "trainable": 235777,
+    "embedding_trainable": false
+  },
+  "metrics": {
+    "accuracy": 0.8794,
+    "macro_f1": 0.8793,
+    "negative_class": {
+      "precision": 0.8997,
+      "recall": 0.8539,
+      "f1": 0.8762,
+      "support": 12500
+    },
+    "positive_class": {
+      "precision": 0.861,
+      "recall": 0.9048,
+      "f1": 0.8824,
+      "support": 12500
+    },
+    "confusion_matrix": {
+      "tn": 10674,
+      "fp": 1826,
+      "fn": 1190,
+      "tp": 11310,
+      "total": 25000
+    },
+    "roc_auc": 0.951
+  },
+  "speed": {
+    "total_seconds": 9.3204,
+    "latency_ms_per_sample": 0.373,
+    "latency_ms_per_batch": 23.84,
+    "samples_per_second": 2682.3
+  },
+  "metrics_without_train_dups": {
+    "accuracy": 0.8794,
+    "macro_f1": 0.8794,
+    "negative_class": {
+      "precision": 0.8992,
+      "recall": 0.8539,
+      "f1": 0.876,
+      "support": 12405
+    },
+    "positive_class": {
+      "precision": 0.8616,
+      "recall": 0.9048,
+      "f1": 0.8827,
+      "support": 12472
+    },
+    "confusion_matrix": {
+      "tn": 10593,
+      "fp": 1812,
+      "fn": 1187,
+      "tp": 11285,
+      "total": 24877
+    },
+    "roc_auc": 0.9511
+  },
+  "n_removed_train_dups": 123
+}

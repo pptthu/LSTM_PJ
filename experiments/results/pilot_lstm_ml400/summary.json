@@ -1,0 +1,37 @@
+{
+  "exp_name": "pilot_lstm_ml400",
+  "n_seeds": 1,
+  "seeds": [
+    42
+  ],
+  "parameters": {
+    "total": 2617889,
+    "trainable": 2617889,
+    "embedding_trainable": true
+  },
+  "best_val_acc": {
+    "mean": 0.8601,
+    "std": 0.0,
+    "formatted": "86.01 ± 0.00%"
+  },
+  "val_loss_at_best": {
+    "mean": 0.3635,
+    "std": 0.0,
+    "formatted": "0.3635 ± 0.0000"
+  },
+  "val_f1_at_best": {
+    "mean": 0.8601,
+    "std": 0.0,
+    "formatted": "86.01 ± 0.00%"
+  },
+  "train_acc_at_best": {
+    "mean": 0.9071,
+    "std": 0.0,
+    "formatted": "90.71 ± 0.00%"
+  },
+  "total_train_seconds": {
+    "mean": 128.52,
+    "std": 0.0,
+    "formatted": "128.5200 ± 0.0000"
+  }
+}

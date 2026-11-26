@@ -1,0 +1,20 @@
+{
+  "exp_name": "bilstm_attention",
+  "split": "test",
+  "n_seeds": 3,
+  "accuracy": {
+    "mean": 0.8828,
+    "std": 0.0016
+  },
+  "macro_f1": {
+    "mean": 0.8828,
+    "std": 0.0016
+  },
+  "roc_auc": {
+    "mean": 0.9527
+  },
+  "total_params": 2768802,
+  "trainable_params": 2768802,
+  "train_time_s_mean": 171.2,
+  "latency_ms_sample_mean": 0.411
+}

@@ -1,0 +1,21 @@
+{
+  "exp_name": "bilstm_glove_ft",
+  "seed": 42,
+  "best_epoch": 4,
+  "stopped_epoch": 7,
+  "best_val_acc": 0.8734,
+  "total_train_seconds": 119.16,
+  "hardware": "Tesla T4",
+  "parameters": {
+    "total": 2735777,
+    "trainable": 2735777,
+    "embedding_trainable": true
+  },
+  "val_loss_at_best": 0.3133,
+  "val_f1_at_best": 0.8734,
+  "train_acc_at_best": 0.9419,
+  "train_loss_at_best": 0.1634,
+  "overfit_gap_at_best": 0.0685,
+  "min_val_loss_epoch": 3,
+  "min_val_loss": 0.3071
+}

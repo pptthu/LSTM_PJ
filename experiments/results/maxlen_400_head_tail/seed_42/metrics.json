@@ -1,0 +1,21 @@
+{
+  "exp_name": "maxlen_400_head_tail",
+  "seed": 42,
+  "best_epoch": 5,
+  "stopped_epoch": 8,
+  "best_val_acc": 0.8856,
+  "total_train_seconds": 101.52,
+  "hardware": "Tesla T4",
+  "parameters": {
+    "total": 2588449,
+    "trainable": 2588449,
+    "embedding_trainable": true
+  },
+  "val_loss_at_best": 0.32,
+  "val_f1_at_best": 0.8855,
+  "train_acc_at_best": 0.9409,
+  "train_loss_at_best": 0.1672,
+  "overfit_gap_at_best": 0.0553,
+  "min_val_loss_epoch": 4,
+  "min_val_loss": 0.3034
+}

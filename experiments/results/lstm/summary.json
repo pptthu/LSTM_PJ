@@ -1,0 +1,39 @@
+{
+  "exp_name": "lstm",
+  "n_seeds": 3,
+  "seeds": [
+    42,
+    123,
+    2025
+  ],
+  "parameters": {
+    "total": 2617889,
+    "trainable": 2617889,
+    "embedding_trainable": true
+  },
+  "best_val_acc": {
+    "mean": 0.8609,
+    "std": 0.0033,
+    "formatted": "86.09 ± 0.33%"
+  },
+  "val_loss_at_best": {
+    "mean": 0.4415,
+    "std": 0.0684,
+    "formatted": "0.4415 ± 0.0684"
+  },
+  "val_f1_at_best": {
+    "mean": 0.8609,
+    "std": 0.0033,
+    "formatted": "86.09 ± 0.33%"
+  },
+  "train_acc_at_best": {
+    "mean": 0.9419,
+    "std": 0.0302,
+    "formatted": "94.19 ± 3.02%"
+  },
+  "total_train_seconds": {
+    "mean": 162.7167,
+    "std": 30.2315,
+    "formatted": "162.7167 ± 30.2315"
+  }
+}

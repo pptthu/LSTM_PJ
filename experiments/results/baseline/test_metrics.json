@@ -1,0 +1,91 @@
+{
+ "M0a_majority": {
+  "majority_class": 1,
+  "test": {
+   "n": 25000,
+   "accuracy": 0.5,
+   "precision": {
+    "negative": 0.0,
+    "positive": 0.5
+   },
+   "recall": {
+    "negative": 0.0,
+    "positive": 1.0
+   },
+   "f1": {
+    "negative": 0.0,
+    "positive": 0.6666666666666666
+   },
+   "macro_f1": 0.3333333333333333,
+   "weighted_f1": 0.33333333333333326,
+   "support": {
+    "negative": 12500,
+    "positive": 12500
+   },
+   "roc_auc": 0.5,
+   "confusion_matrix": {
+    "labels": [
+     0,
+     1
+    ],
+    "matrix": [
+     [
+      0,
+      12500
+     ],
+     [
+      0,
+      12500
+     ]
+    ]
+   }
+  }
+ },
+ "M0b_tfidf_lr": {
+  "selected_C": 10.0,
+  "parameters": {
+   "total": 398265,
+   "trainable": 398265
+  },
+  "inference_ms_per_review": 0.3211,
+  "test": {
+   "n": 25000,
+   "accuracy": 0.89944,
+   "precision": {
+    "negative": 0.9024016763378465,
+    "positive": 0.8965216010165185
+   },
+   "recall": {
+    "negative": 0.89576,
+    "positive": 0.90312
+   },
+   "f1": {
+    "negative": 0.8990685723462342,
+    "positive": 0.8998087039693926
+   },
+   "macro_f1": 0.8994386381578134,
+   "weighted_f1": 0.8994386381578134,
+   "support": {
+    "negative": 12500,
+    "positive": 12500
+   },
+   "roc_auc": 0.9630215296,
+   "confusion_matrix": {
+    "labels": [
+     0,
+     1
+    ],
+    "matrix": [
+     [
+      11197,
+      1303
+     ],
+     [
+      1211,
+      11289
+     ]
+    ]
+   }
+  }
+ }
+}

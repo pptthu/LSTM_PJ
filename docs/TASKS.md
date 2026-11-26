@@ -35,9 +35,9 @@
 
 | Việc | Ai | Ghi chú |
 | :--- | :--- | :--- |
-| Tokenizer, vocab, Dataset; `SentimentRNN`; GloVe | Đại | D1–D2 xong code + test; D3 chờ trích `.npy` trên dữ liệu thật |
-| Vòng train + monitor; pilot; 15 lần chạy chính; mở rộng A/B | Đại | D4 xong code + test; D5–D7 chờ chạy trên Colab (`notebooks/colab_d1_d8.ipynb`) |
-| Chạy test một lần; bảng so sánh; McNemar; file dự đoán | Đại | D8 xong code + test; chờ chạy 1 lần trên Colab sau D6 |
+| Tokenizer, vocab, Dataset; `SentimentRNN`; GloVe | Đại | D1–D3 ✅ (GloVe phủ 98,72% vocab) |
+| Vòng train + monitor; pilot; 15 lần chạy chính; mở rộng A/B | Đại | D4–D7 ✅ — Thư chạy trên Kaggle T4 (code `e1f38ec`, 26/11); D5 chốt `max_len` = 400 |
+| Chạy test một lần; bảng so sánh; McNemar; file dự đoán | Đại | D8 ✅ — test chạy 1 lần, McNemar vs B1 |
 | Phân tích lỗi; giải thích mô hình | Thư | T2–T3 (T1 30 câu tự viết đã xong) |
 | Demo Gradio | Bảo | B6 xong code `src/predict.py` + `src/demo/app.py`; chờ checkpoint thật từ D6 |
 | README, notebook, báo cáo tiếng Việt + tiếng Anh, slide | Thư | T4–T5 |
@@ -64,12 +64,12 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (ghi bằng chứng
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | D1 | Tokenizer (lowercase, giữ `not`, `n't`, `!`, `?`, không bỏ stopword), vocab chỉ từ train, Dataset/DataLoader trả độ dài thật | `src/data/tokenizer.py`, `vocab.py`, `dataset.py` | test pass | T2 tối | B1 (có thể code trước trên cây aclImdb giả) | ✅ |
 | D2 | `SentimentRNN` (LSTM/GRU, 1/2 chiều, `pack_padded_sequence`, trả logit) | `src/models/rnn.py` | test shape, overfit 1 batch, save/load | T2 tối | — | ✅ |
-| D3 | GloVe 6B 100d lọc theo vocab, ghi tỷ lệ phủ | `src/models/glove.py` | `data/processed/glove_100d_vocab.npy` | T2 tối | D1 | 🟨 |
-| D4 | Vòng train + early stopping theo **val acc** + **monitor** (`history.csv`, learning curve) theo [phases/TRAINING.md](phases/TRAINING.md) | `src/train.py`, `src/training/monitor.py`, `configs/*.yaml` | chạy 1 epoch trên 500 mẫu không lỗi | T2 tối | D1, D2 | 🟨 |
-| D5 | Pilot M1 trên Kaggle → chốt `max_len`, trần epoch, patience (ghi lý do vào progress) | `notebooks/colab_d1_d8.ipynb` | log pilot | T3 24/11 sáng | B1, D4 | ⬜ |
-| D6 | M1–M4b × 3 seed (42, 123, 2025); bảng so sánh val; hình learning curve | `notebooks/colab_d1_d8.ipynb`, `src/train.py` | `experiments/results/<exp>/`, `experiments/plots/training/` | T3 **14:00 (mốc dừng)** | D5 | ⬜ |
-| D7 | Mở rộng A: `max_len` 200/400/600 + cách cắt (1 seed); B (nếu đạt mốc dừng): attention pooling × 3 seed | `notebooks/colab_d1_d8.ipynb` | bảng `max_len` | T3 chiều–tối | D6 | ⬜ |
-| D8 | **Evaluation**: chốt mô hình theo val → chạy test **một lần**; metric đủ, confusion matrix, ROC, McNemar vs B1, số tham số, thời gian; xuất `predictions_test.csv` | `src/evaluate.py`, `src/eval/metrics.py`, `notebooks/colab_d1_d8.ipynb` | `experiments/results/comparison_*.csv`, `mcnemar.json`, file dự đoán | T3 tối | D6, B5 | 🟨 |
+| D3 | GloVe 6B 100d lọc theo vocab, ghi tỷ lệ phủ | `src/models/glove.py` | `data/processed/glove_100d_vocab.npy` | T2 tối | D1 | ✅ |
+| D4 | Vòng train + early stopping theo **val acc** + **monitor** (`history.csv`, learning curve) theo [phases/TRAINING.md](phases/TRAINING.md) | `src/train.py`, `src/training/monitor.py`, `configs/*.yaml` | chạy 1 epoch trên 500 mẫu không lỗi | T2 tối | D1, D2 | ✅ |
+| D5 | Pilot M1 trên Kaggle → chốt `max_len`, trần epoch, patience (ghi lý do vào progress) | `notebooks/colab_d1_d8.ipynb` | log pilot | T3 24/11 sáng | B1, D4 | ✅ |
+| D6 | M1–M4b × 3 seed (42, 123, 2025); bảng so sánh val; hình learning curve | `notebooks/colab_d1_d8.ipynb`, `src/train.py` | `experiments/results/<exp>/`, `experiments/plots/training/` | T3 **14:00 (mốc dừng)** | D5 | ✅ |
+| D7 | Mở rộng A: `max_len` 200/400/600 + cách cắt (1 seed); B (nếu đạt mốc dừng): attention pooling × 3 seed | `notebooks/colab_d1_d8.ipynb` | bảng `max_len` | T3 chiều–tối | D6 | ✅ |
+| D8 | **Evaluation**: chốt mô hình theo val → chạy test **một lần**; metric đủ, confusion matrix, ROC, McNemar vs B1, số tham số, thời gian; xuất `predictions_test.csv` | `src/evaluate.py`, `src/eval/metrics.py`, `notebooks/colab_d1_d8.ipynb` | `experiments/results/comparison_*.csv`, `mcnemar.json`, file dự đoán | T3 tối | D6, B5 | ✅ |
 
 ### Thư — Chốt, phân tích lỗi, báo cáo
 
