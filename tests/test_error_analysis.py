@@ -65,4 +65,8 @@ def test_pick_best_exp_skips_single_seed_and_ablation(tmp_path):
     put("maxlen_600_post", 0.89, 3, {42: 0.89})        # ablation → bỏ
     put("gru", 0.859, 3, {42: 0.86, 123: 0.862, 2025: 0.855})
     put("bilstm_attention", 0.861, 3, {42: 0.866, 123: 0.862, 2025: 0.856})
+    (tmp_path / "explain").mkdir()                     # thư mục kết quả T3, summary.json không có best_val_acc
+    (tmp_path / "explain" / "summary.json").write_text(json.dumps({"model": "gru", "seed": 42}))
+    (tmp_path / "other_tool").mkdir()
+    (tmp_path / "other_tool" / "summary.json").write_text(json.dumps({"n": 1}))
     assert pick_best_exp(tmp_path) == ("bilstm_attention", 42)

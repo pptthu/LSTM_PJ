@@ -39,7 +39,7 @@ import pandas as pd
 from src.utils.paths import REPO_ROOT, data_dir, experiment_dir
 
 MAIN_SKIP_PREFIX = ("pilot_", "maxlen_")
-NON_MODEL_DIRS = {"baseline", "majority", "data_prep", "eda", "error_analysis"}
+NON_MODEL_DIRS = {"baseline", "majority", "data_prep", "eda", "error_analysis", "explain", "demo"}
 
 NEG_RE = re.compile(r"\b(?:not|no|never|nothing|nobody|none|neither|nor|hardly|barely|without)\b|n't\b")
 CONTRAST_RE = re.compile(
@@ -78,7 +78,7 @@ def pick_best_exp(results_dir: Path) -> tuple[str, int]:
         if not s.exists():
             continue
         info = json.loads(s.read_text(encoding="utf-8"))
-        if int(info.get("n_seeds", 3)) < 2:  # mô hình chính phải đủ nhiều seed (bỏ lần chạy thử)
+        if "best_val_acc" not in info or int(info.get("n_seeds", 3)) < 2:  # bỏ thư mục không phải mô hình, chạy thử 1 seed
             continue
         acc = float(info["best_val_acc"]["mean"])
         if acc > best_acc:
