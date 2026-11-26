@@ -53,26 +53,47 @@ pip install -r requirements.txt
 
 ## 4. Lệnh chạy
 
-Lệnh cụ thể ghi vào đây khi code từng phase xong. Thứ tự: tải dữ liệu → chia split → baseline → train (3 seed) → evaluate → demo. Xem [docs/OVERVIEW.md](docs/OVERVIEW.md).
-
-Đã chạy được (chạy từ gốc repo):
+Chạy từ gốc repo, theo thứ tự. Bước 4–5 nên chạy trên GPU (Kaggle T4: khoảng 2–4 phút mỗi lần train); các bước khác chạy được trên CPU.
 
 ```bash
-python -m pytest                     # test offline, không cần dữ liệu thật
-python -m src.data.download          # tải aclImdb (84 MB) vào data/raw/, đọc 2 split, lưu bộ đệm parquet
-python -m src.data.eda               # EDA train / val / test → experiments/results/eda, experiments/plots/eda
+# 0. Kiểm tra code (offline, không cần dữ liệu thật)
+python -m pytest
+
+# 1. Dữ liệu: tải aclImdb (84 MB) → làm sạch, loại trùng, áp split Lab 3 → data/processed/reviews.parquet
+python -m src.data.download
+python -m src.data.prepare            # in số đã loại; ghi experiments/results/data_prep/prepare_stats.json
+python -m src.data.eda                # experiments/results/eda/, experiments/plots/eda/
+
+# 2. Baseline M0a / M0b (chọn C trên val)
+python -m src.models.baseline
+python -m src.models.baseline --eval-test     # chỉ chạy ở bước 6, một lần
+
+# 3. GloVe (chỉ cần cho M4a/M4b): tải glove.6B.zip, giải nén glove.6B.100d.txt vào data/glove/ (xem docs/DATA.md §6)
+
+# 4. Train: 6 config × 3 seed (42, 123, 2025); max_len = 400 đã chốt ở pilot D5
+python -m src.train --config configs/gru.yaml --seed 42
+#    config: lstm, gru, bilstm, bilstm_glove_frozen, bilstm_glove_ft, bilstm_attention
+
+# 5. Đánh giá trên val, so sánh, chọn mô hình theo mean val acc
+python -m src.evaluate --exp gru --split val
+python -m src.evaluate --compare --split val
+
+# 6. Test — một lần, sau khi đã chọn mô hình (ghi predictions_test.csv, không commit vì ~33 MB)
+python -m src.evaluate --exp gru --split test
+python -m src.evaluate --compare --split test
+python -m src.evaluate --mcnemar-a experiments/results/gru/predictions_test.csv     --mcnemar-b experiments/results/baseline/predictions_test.csv --name-a gru
+
+# 7. Phân tích lỗi (T2, cần predictions_test.csv của bước 6) và giải thích mô hình (T3)
+python -m src.eval.error_analysis
+python -m src.eval.explain
+
+# 8. Dự đoán, demo, đo thời gian CPU (M5)
+python -m src.predict "The cast is wonderful, but the script is a mess."
+python -m src.demo.app                # mở http://127.0.0.1:7860
+python -m src.demo.benchmark
 ```
 
-Split train/val dùng lại của Lab 3: `data/splits/train_val_split.json` (22.499 / 2.501, chia theo phim) — xem [docs/DATA.md](docs/DATA.md) §3.
-
-Dự kiến:
-
-```bash
-python -m src.train --config configs/lstm.yaml --seed 42      # dự kiến
-python -m src.evaluate --exp lstm --split val                  # dự kiến
-python -m src.predict "not bad at all"                         # dự kiến
-python -m src.demo.app                                         # dự kiến
-```
+Split train/val dùng lại của Lab 3: `data/splits/train_val_split.json` (22.499 / 2.501, chia theo phim) — xem [docs/DATA.md](docs/DATA.md) §3. Pipeline Kaggle đã dùng để chạy D5–D8 (cùng các bước trên): xem [docs/phases/TRAINING.md](docs/phases/TRAINING.md) mục "Chạy trên Kaggle". Checkpoint (`experiments/checkpoints/`) không có trong repo; `predict`, `demo`, `explain` tự chọn mô hình chính tốt nhất theo `experiments/results/` khi checkpoint có trên máy.
 
 ## 5. Kết quả
 
