@@ -28,12 +28,12 @@ Theo [PURPOSE.md](PURPOSE.md) §4. Ghi số thật và file nguồn; trượt ch
 
 | # | Chỉ tiêu | Kết quả | Nguồn | Đạt? |
 | :--- | :--- | :--- | :--- | :--- |
-| M1 | LSTM test acc ≥ 85% | TBD | `experiments/results/lstm/` | — |
-| M2 | Mô hình tốt nhất test acc ≥ 88%, macro-F1 ≥ 0.88 | TBD | TBD | — |
-| M3 | Bảng so sánh với TF-IDF + LR, cùng split | TBD | [experiments/README.md](experiments/README.md) | — |
-| M4 | Số liệu từng nhóm tình huống, ≥ 10 ví dụ sai/nhóm kèm giải thích | TBD | [phases/EVAL.md](phases/EVAL.md) | — |
-| M5 | Demo CPU < 1 giây/review, có tô màu từ | TBD | [phases/DEMO_REPORT.md](phases/DEMO_REPORT.md) | — |
-| M6 | 3 seed mean ± std; chạy lại lệch ≤ 1% | TBD | `experiments/results/<exp>/summary.json` | — |
+| M1 | LSTM test acc ≥ 85% | 86,48 ± 0,32% | `experiments/results/lstm/test_summary.json` | ✅ |
+| M2 | Mô hình tốt nhất test acc ≥ 88%, macro-F1 ≥ 0.88 | GRU (chọn theo val) 88,16 ± 0,18%, macro-F1 0,8816 | `experiments/results/gru/test_summary.json` | ✅ |
+| M3 | Bảng so sánh với TF-IDF + LR, cùng split | Baseline 89,94% hơn GRU, McNemar có ý nghĩa | [experiments/README.md](experiments/README.md), `experiments/results/mcnemar.json` | ✅ |
+| M4 | Số liệu từng nhóm tình huống, ≥ 10 ví dụ sai/nhóm kèm giải thích | Có bảng 7 nhóm + ví dụ; **chưa điền cột giải thích** | `experiments/results/error_analysis/` | 🟨 |
+| M5 | Demo CPU < 1 giây/review, có tô màu từ | GRU: trung vị 60 ms, chậm nhất 199 ms (130 review, CPU Intel, đã gồm occlusion); chưa có ảnh chụp | `experiments/results/demo/latency.json` | ✅ (thiếu ảnh) |
+| M6 | 3 seed mean ± std; chạy lại lệch ≤ 1% | 3 seed, std ≤ 0,93 điểm; chưa chạy lại theo README trên máy khác | `experiments/results/<exp>/summary.json` | 🟨 |
 
 ## 3. Yêu cầu đăng ký đề tài
 

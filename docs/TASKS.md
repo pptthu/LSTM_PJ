@@ -78,7 +78,7 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (ghi bằng chứng
 | T0 | Duyệt + merge PR; thêm collaborator; điền MSSV | — | — | liên tục | — | ⬜ |
 | T1 | Viết 30 câu tự viết **trước khi** chạy mô hình: 5 tích cực, 5 tiêu cực, 5 phủ định, 5 mỉa mai, 5 vừa khen vừa chê, 5 ngoài miền | `data/sample/handwritten_30.csv` | file 30 dòng (`text,label,case_type`) | T2 tối | — | ✅ |
 | T2 | **Error analysis**: accuracy theo 7 nhóm tình huống (kèm số mẫu); ≥ 10 ví dụ sai/nhóm có giải thích; gán tay 50 lỗi (vừa khen vừa chê, mỉa mai); kết quả 30 câu | `src/eval/error_analysis.py` | `experiments/results/error_analysis/` | T3 tối – T4 sáng | D8 | 🟨 |
-| T3 | Giải thích mô hình: occlusion (+ deletion test) trên mẫu review; kiểm "đường tắt" | `src/eval/explain.py` | hình heatmap từ | T4 sáng | D8 | ⬜ |
+| T3 | Giải thích mô hình: occlusion (+ deletion test) trên mẫu review; kiểm "đường tắt" | `src/eval/explain.py` | hình heatmap từ | T4 sáng | D8 | ✅ |
 | T4 | Notebook trình bày (tiếng Việt), section: EDA → Baseline → Model → **Monitor training** → **Evaluation** → **Error analysis** → Demo; chỉ đọc `experiments/` | `notebooks/presentation.ipynb` | notebook chạy hết | T4 12:00 | B3, D6, D8, T2 | ⬜ |
 | T5 | README, báo cáo PDF tiếng Việt → dịch tiếng Anh, slide; kiểm số khớp giữa các bản | `README.md`, `reports/` | 2 PDF + slide | **T4 trước 14:00** | tất cả | ⬜ |
 

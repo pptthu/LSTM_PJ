@@ -1,0 +1,19 @@
+{
+ "checkpoint": "gru/seed_123/best.pt",
+ "max_len": 400,
+ "n_reviews": 130,
+ "ms_median": 59.9,
+ "ms_p95": 96.1,
+ "ms_max": 199.4,
+ "share_under_1s": 1.0,
+ "tokens_median": 159,
+ "tokens_max": 1235,
+ "m5_pass": true,
+ "machine": {
+  "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+  "os": "Windows-11-10.0.26300-SP0",
+  "torch": "2.14.1+cpu",
+  "torch_threads": 12
+ },
+ "note": "gồm dự đoán + occlusion (120 token đầu) + dựng HTML; mô hình đã nạp sẵn"
+}

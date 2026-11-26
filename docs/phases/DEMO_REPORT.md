@@ -6,7 +6,7 @@
 - **Detailed Plan**: Header; Goals; Input/Output; How to do it; Detailed plan / gotchas; Verification gates; Links.
 - **References**: [OVERVIEW.md](../OVERVIEW.md), [PURPOSE.md](../PURPOSE.md) §4 (M5), §8.
 - **Created**: 2026-11-05T11:21:04+07:00
-- **Last Updated**: 2026-11-23T10:00:45+07:00
+- **Last Updated**: 2026-11-26T10:00:00+07:00
 
 ---
 
@@ -14,9 +14,9 @@
 
 - **Title:** Demo, README, báo cáo & slide
 - **Date created:** 2026-11-05
-- **Last updated:** 2026-11-23
+- **Last updated:** 2026-11-26
 - **Description:** Demo Gradio + notebook demo, README, báo cáo cuối kỳ và slide.
-- **Status:** To Do
+- **Status:** In Progress (demo xong; README, báo cáo chưa)
 - **Owner:** Bảo (demo Gradio); Thư (README, notebook, báo cáo PDF tiếng Việt + tiếng Anh, slide)
 - **Hạn:** T4 25/11 — nộp trước 14:00
 
@@ -46,8 +46,14 @@
 ## Verification gates
 
 - [ ] Clone repo mới, làm theo README, demo chạy được.
-- [ ] Thời gian 1 review trên CPU < 1 giây (ghi máy đo).
+- [x] Thời gian 1 review trên CPU < 1 giây (ghi máy đo): GRU seed 123, 130 review, trung vị 60 ms, chậm nhất 199 ms, CPU Intel 12 luồng, Windows 11 (`experiments/results/demo/latency.json`, `python -m src.demo.benchmark`).
 - [ ] REPORT_CHECKLIST: 7/7 Đạt.
+
+## Kết quả demo (26/11)
+
+- Mô hình: GRU seed 123 (chọn theo val), `max_len` = 400. `src/predict.py` tự chọn mô hình chính tốt nhất theo mean val acc 3 seed, bỏ qua pilot/ablation.
+- Ảnh: `experiments/plots/demo/demo_screenshot.png` (câu khen → Positive 96%), `demo_screenshot_2.png` (câu vừa khen vừa chê, nhãn Negative → mô hình đoán **sai** Positive 97%; "exhausting" bị tô xanh, "but" gần như không ảnh hưởng — ví dụ cho giới hạn "đổi giọng ở cuối").
+- Còn: các nút ví dụ lấy từ `sample_100.csv` hiện thẻ `<br />` thô (chỉ phần hiển thị, mô hình vẫn đọc văn bản đã làm sạch).
 
 ## Links
 
