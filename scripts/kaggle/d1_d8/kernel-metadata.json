@@ -1,0 +1,14 @@
+{
+ "id": "pptt1103/lstm-pj-d1-d8",
+ "title": "lstm-pj-d1-d8",
+ "code_file": "pipeline.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "dataset_sources": ["ktgiahieu/glove6b100d"],
+ "kernel_sources": [],
+ "competition_sources": []
+}

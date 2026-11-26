@@ -1,0 +1,14 @@
+{
+ "id": "pptt1103/lstm-pj-m6-repro",
+ "title": "lstm-pj-m6-repro",
+ "code_file": "m6.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "dataset_sources": [],
+ "kernel_sources": [],
+ "competition_sources": []
+}
