@@ -1,0 +1,31 @@
+text,label,case_type,prob,pred,correct,prob_baseline,pred_baseline,correct_baseline
+"Every scene feels carefully considered, and the lead actress delivers an emotional performance that made the entire story believable.",1,positive,0.9634,1,True,0.7116,1,True
+I loved how the director balanced humor and tension without making either feel forced. The final sequence was especially satisfying.,1,positive,0.9958,1,True,0.8334,1,True
+"The writing is sharp, the soundtrack fits every moment, and the supporting cast brings surprising depth to even the smallest roles.",1,positive,0.8616,1,True,0.628,1,True
+"From the opening scene to the closing credits, the film kept me completely absorbed. I would happily watch it again.",1,positive,0.2475,0,False,0.7593,1,True
+Beautiful cinematography and genuinely thoughtful storytelling make this film feel fresh. Nothing about the experience felt unnecessary.,1,positive,0.2494,0,False,0.7265,1,True
+"The plot is painfully predictable, and the characters behave in ways that make absolutely no sense. I struggled to finish it.",0,negative,0.0073,0,True,0.0427,0,True
+"Flat dialogue, awkward editing, and lifeless performances turn what could have been an interesting story into a frustrating experience.",0,negative,0.0466,0,True,0.0372,0,True
+"I kept waiting for something meaningful to happen, but the film offered nothing beyond repetitive conversations and dull scenes.",0,negative,0.0027,0,True,0.0409,0,True
+"The soundtrack constantly overwhelms the dialogue, while the poorly developed characters make it impossible to care about their problems.",0,negative,0.1952,0,True,0.0771,0,True
+"Even the supposedly emotional moments feel artificial. The story lacks direction, and the ending only makes its problems more obvious.",0,negative,0.0032,0,True,0.1859,0,True
+"It is not a bad film at all; the performances are convincing, and the story has more emotional depth than I expected.",1,negation,0.575,1,True,0.3166,0,False
+"I didn't enjoy the first half, but the second half completely changed my impression with its clever twists and satisfying conclusion.",1,negation,0.9812,1,True,0.4027,0,False
+"Never boring, never confusing, and surprisingly heartfelt, this film kept my attention from beginning to end.",1,negation,0.9221,1,True,0.5088,1,True
+"The characters are not interesting, the dialogue is not convincing, and there is no satisfying conclusion to hold the story together.",0,negation,0.1565,0,True,0.1616,0,True
+There is no reason to watch a film that spends nearly two hours repeating the same pointless conflict without developing anything.,0,negation,0.004,0,True,0.02,0,True
+"Wonderful, another film where every character shouts instead of having a conversation. The subtle writing must have been on vacation.",0,sarcasm,0.2722,0,True,0.401,0,True
+"I especially loved the magical editing, where entire scenes seem to disappear without explanation. What a brilliant storytelling choice.",0,sarcasm,0.9995,1,False,0.8067,1,False
+Congratulations to the director for making a supposedly thrilling story feel like an extended waiting room. Truly an unforgettable achievement.,0,sarcasm,0.1929,0,True,0.5312,1,False
+Terrible news for my sleep schedule: I stayed up past 3 a.m. because I simply could not stop watching.,1,sarcasm,0.0022,0,False,0.0809,0,False
+What a delightful surprise: the ending ignores every question raised earlier and somehow manages to introduce even more confusion.,0,sarcasm,0.9914,1,False,0.6899,1,False
+"The lead actor is excellent and the visuals are impressive, but the repetitive plot makes the overall experience exhausting.",0,mixed,0.9743,1,False,0.9373,1,False
+"Although the opening is engaging and the soundtrack works beautifully, the weak final act leaves the story feeling incomplete.",0,mixed,0.835,1,False,0.8331,1,False
+"The middle section drags and a few jokes fall flat, but the last twenty minutes are so moving that I left the theater smiling.",1,mixed,0.2508,0,False,0.2706,0,False
+"The beginning takes its time establishing the characters, but the emotional payoff is so rewarding that the patience feels worthwhile.",1,mixed,0.361,0,False,0.383,0,False
+"Despite a few awkward transitions, the clever dialogue and convincing performances make this an enjoyable film from start to finish.",1,mixed,0.8272,1,True,0.8163,1,True
+"The restaurant has a welcoming atmosphere, the staff are attentive, and every dish arrives fresh and beautifully prepared.",1,out_of_domain,0.9978,1,True,0.9052,1,True
+"My new phone handles multiple apps smoothly, takes crisp photos in low light, and lasts almost two days on a single charge.",1,out_of_domain,0.414,0,False,0.6515,1,True
+"The hotel room was spotless, the bed was comfortable, and the reception team helped us resolve a booking issue immediately.",1,out_of_domain,0.8188,1,True,0.7652,1,True
+"The delivery arrived several days late, and the package was damaged despite the outer box appearing completely intact.",0,out_of_domain,0.7309,1,False,0.3777,0,True
+"This book promises practical advice but repeats basic ideas across every chapter, with confusing explanations and very few useful examples.",0,out_of_domain,0.3897,0,True,0.2564,0,True
