@@ -55,6 +55,9 @@ Nhóm trình bày trước bị thiếu phần này → bắt buộc có hình t
 
 ## Chạy trên Kaggle
 
+> **Đã chạy (26/11/2026):** toàn bộ D1–D8 chạy bằng `scripts/kaggle/d1_d8/pipeline.py` trên Kaggle T4 (kernel `pptt1103/lstm-pj-d1-d8`, Version 2); M6 bằng `scripts/kaggle/m6/m6.py`. Cách chạy lại và nơi Kaggle giữ output: [scripts/kaggle/README.md](../../scripts/kaggle/README.md). Các bước dưới đây là hướng dẫn chuẩn bị ban đầu.
+
+
 `requirements.txt` ghim `pandas==3.1.1`, `pyarrow==26.0.1`, `scikit-learn==1.9.1` theo máy đã tạo dữ liệu và baseline (Bảo, Python 3.12). Cài nguyên file lên Kaggle sẽ nâng các gói này và có thể làm hỏng thư viện có sẵn của Kaggle.
 
 1. **Không** chạy `pip install -r requirements.txt` trên Kaggle. Dùng thư viện có sẵn (torch, numpy, pandas, pyarrow, scikit-learn, matplotlib, pyyaml); thiếu gói nào thì `pip install <gói>` riêng gói đó. Gradio chỉ dùng cho demo trên máy, không cần trên Kaggle.

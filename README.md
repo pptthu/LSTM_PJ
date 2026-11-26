@@ -93,7 +93,7 @@ python -m src.demo.app                # mở http://127.0.0.1:7860
 python -m src.demo.benchmark
 ```
 
-Split train/val dùng lại của Lab 3: `data/splits/train_val_split.json` (22.499 / 2.501, chia theo phim) — xem [docs/DATA.md](docs/DATA.md) §3. Pipeline Kaggle đã dùng để chạy D5–D8 (cùng các bước trên): xem [docs/phases/TRAINING.md](docs/phases/TRAINING.md) mục "Chạy trên Kaggle". Checkpoint (`experiments/checkpoints/`) không có trong repo; `predict`, `demo`, `explain` tự chọn mô hình chính tốt nhất theo `experiments/results/` khi checkpoint có trên máy.
+Split train/val dùng lại của Lab 3: `data/splits/train_val_split.json` (22.499 / 2.501, chia theo phim) — xem [docs/DATA.md](docs/DATA.md) §3. Pipeline Kaggle đã dùng để chạy D5–D8 (cùng các bước trên) và kiểm M6: [scripts/kaggle/](scripts/kaggle/README.md). Checkpoint (`experiments/checkpoints/`) không có trong repo; `predict`, `demo`, `explain` tự chọn mô hình chính tốt nhất theo `experiments/results/` khi checkpoint có trên máy.
 
 ## 5. Kết quả
 
