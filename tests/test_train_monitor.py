@@ -62,8 +62,8 @@ def test_run_training_one_epoch_isolated():
         assert Path(res["vocab_path"]).exists()
 
         # Kiểm tra history.csv có mặt ở cả runs/ và results/ với đủ 9 cột bắt buộc
-        run_hist = exp_root / "runs" / "lstm_mini" / "seed_42" / "history.csv"
-        res_hist = exp_root / "results" / "lstm_mini" / "seed_42" / "history.csv"
+        run_hist = exp_root / "runs" / "lstm_mini_sample20" / "seed_42" / "history.csv"
+        res_hist = exp_root / "results" / "lstm_mini_sample20" / "seed_42" / "history.csv"
         assert run_hist.exists() and res_hist.exists()
 
         hist_df = pd.read_csv(res_hist)
@@ -72,12 +72,15 @@ def test_run_training_one_epoch_isolated():
             "val_f1", "grad_norm_mean", "lr", "epoch_seconds",
         }
         assert expected_cols == set(hist_df.columns)
-        assert (exp_root / "results" / "lstm_mini" / "summary.json").exists()
-        assert (exp_root / "plots" / "training" / "lstm_mini_curves.png").exists()
+        assert (exp_root / "results" / "lstm_mini_sample20" / "summary.json").exists()
+        assert (exp_root / "plots" / "training" / "lstm_mini_sample20_curves.png").exists()
 
         # Đảm bảo chạy sample_size KHÔNG ghi vào checkpoints/<exp>/vocab.json
         ckpt_vocab = exp_root / "checkpoints" / "lstm_mini" / "vocab.json"
         assert not ckpt_vocab.exists()
+        # ... và không ghi bất kỳ file nào vào thư mục của lần chạy thật
+        for sub in ("checkpoints", "runs", "results"):
+            assert not (exp_root / sub / "lstm_mini").exists()
 
 
 def test_sample_size_does_not_pollute_full_vocab_and_summary_uses_sample_std():

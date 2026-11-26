@@ -164,6 +164,9 @@ def run_training(
         config = yaml.safe_load(f)
 
     exp_name = exp_name_override or cfg_file.stem
+    if sample_size is not None and sample_size > 0:
+        # Chạy thử ghi sang thư mục riêng, không đè best.pt / metrics.json / history của lần chạy thật
+        exp_name = f"{exp_name}_sample{sample_size}"
     logger.info(f"Bắt đầu huấn luyện thí nghiệm '{exp_name}' với seed {seed}...")
 
     # 1. Cố định seed
