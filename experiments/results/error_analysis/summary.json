@@ -1,0 +1,37 @@
+{
+ "model": "gru",
+ "seed": 123,
+ "n_test": 25000,
+ "accuracy": 0.8821,
+ "n_errors": 2947,
+ "false_positive": 1431,
+ "false_negative": 1516,
+ "baseline_file": "experiments/results/baseline/predictions_test.csv",
+ "rules": {
+  "length": "số token (tokenizer của mô hình): <100, 100–300, 300–600, >600; và was_truncated (dài hơn max_len)",
+  "negation": "số lần khớp \"\\\\b(?:not|no|never|nothing|nobody|none|neither|nor|hardly|barely|without)\\\\b|n't\\\\b\": 0–2, 3–5, 6+",
+  "contrast_end": "có từ khớp '\\\\b(?:but|however|although|though|yet|nevertheless|nonetheless|despite|whereas|on the other hand)\\\\b' bắt đầu sau 70% độ dài review",
+  "sarcasm_candidate": "khớp từ khoá mỉa mai hoặc dấu nháy quanh từ khen (heuristic; xác nhận bằng gán tay)",
+  "rating": "sát ngưỡng = 4 hoặc 7; cực trị = 1 hoặc 10; còn lại = 2, 3, 8, 9",
+  "oov": "n_unk / n_tokens: <1%, 1–3%, >3%"
+ },
+ "handwritten_30": {
+  "accuracy_scored": 0.64,
+  "by_case_type": {
+   "mixed": 0.2,
+   "negation": 1.0,
+   "negative": 1.0,
+   "out_of_domain": 0.6,
+   "positive": 0.6,
+   "sarcasm": 0.4
+  },
+  "baseline_by_case_type": {
+   "mixed": 0.2,
+   "negation": 0.6,
+   "negative": 1.0,
+   "out_of_domain": 1.0,
+   "positive": 1.0,
+   "sarcasm": 0.2
+  }
+ }
+}

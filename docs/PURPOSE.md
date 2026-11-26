@@ -11,7 +11,7 @@
 ---
 
 > Nhóm `[tên nhóm]` — Chủ đề số 3 (nhóm LLMs) — Classification — IMDb — Sentiment analysis
-> Thành viên: `[Họ tên 1 – MSSV]`, `[Họ tên 2 – MSSV]`, `[Họ tên 3 – MSSV]`
+> Thành viên (6): Phạm Phương Thanh Thư, Nguyễn Khánh Toàn, Ngô Hồng Phúc, Phạm Thị Muội, Nguyễn Thái Bảo, Nguyễn Bảo Đại. MSSV ghi trong báo cáo PDF, không ghi trong repo công khai.
 
 | Mục | Nội dung |
 | :--- | :--- |
@@ -143,9 +143,9 @@ Chi tiết và giao thức chia dữ liệu: [DATA.md](DATA.md).
 
 | Thành viên | Nhiệm vụ chính | Phase |
 | :--- | :--- | :--- |
-| Bảo `[MSSV]` | Dữ liệu: loại trùng, EDA, `DATA.md`, dữ liệu mẫu; baseline Majority + TF-IDF + LR; demo Gradio | DATA_PREP, BASELINE, DEMO_REPORT (demo) |
-| Đại `[MSSV]` | Mô hình và huấn luyện: tokenizer, vocab, LSTM, GRU, BiLSTM, GloVe; chạy 3 seed trên Kaggle; chạy test một lần, McNemar; xuất file dự đoán | MODEL, TRAINING, EVAL (test) |
-| Thư `[MSSV]` | Chốt quyết định, duyệt PR; 30 câu tự viết; phân tích lỗi, giải thích mô hình; README, notebook, báo cáo (tiếng Việt + tiếng Anh), slide | EVAL (phân tích lỗi), DEMO_REPORT (báo cáo) |
+| Nguyễn Thái Bảo | Dữ liệu: loại trùng, EDA, `DATA.md`, dữ liệu mẫu; baseline Majority + TF-IDF + LR; demo Gradio | DATA_PREP, BASELINE, DEMO_REPORT (demo) |
+| Nguyễn Bảo Đại | Mô hình và huấn luyện: tokenizer, vocab, LSTM, GRU, BiLSTM, GloVe; chạy 3 seed trên Kaggle; chạy test một lần, McNemar; xuất file dự đoán | MODEL, TRAINING, EVAL (test) |
+| Phạm Phương Thanh Thư | Chốt quyết định, duyệt PR; 30 câu tự viết; phân tích lỗi, giải thích mô hình; README, notebook, báo cáo (tiếng Việt + tiếng Anh), slide | EVAL (phân tích lỗi), DEMO_REPORT (báo cáo) |
 
 Cả nhóm cùng review code; mỗi người tự trình bày được phần của mình.
 

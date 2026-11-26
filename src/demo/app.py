@@ -12,6 +12,7 @@ Chạy từ gốc repo:
 from __future__ import annotations
 
 import html
+import re
 import time
 from typing import Any
 import pandas as pd
@@ -72,7 +73,8 @@ def load_demo_examples(max_examples: int = 8) -> list[list[str]]:
         for _, row in s100.groupby("case_type", sort=False).head(1).iterrows():
             if len(examples) >= max_examples:
                 break
-            examples.append(str(row["text"]))
+            # review IMDb gốc chứa thẻ <br /> — bỏ khi hiển thị trên nút ví dụ
+            examples.append(re.sub(r"(?:\s*<br\s*/?>\s*)+", " ", str(row["text"])).strip())
 
     if not examples:
         examples = [

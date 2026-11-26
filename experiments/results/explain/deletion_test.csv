@@ -1,0 +1,9 @@
+k,how,n,mean_conf_drop,flip_rate
+1,random,300,0.0022,0.0067
+1,top_occlusion,300,0.1226,0.17
+3,random,300,0.0054,0.0133
+3,top_occlusion,300,0.252,0.3
+5,random,300,0.0147,0.0367
+5,top_occlusion,300,0.3542,0.3933
+10,random,300,0.0323,0.0533
+10,top_occlusion,300,0.5208,0.59

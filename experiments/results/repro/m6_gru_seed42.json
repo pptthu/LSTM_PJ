@@ -1,0 +1,45 @@
+{
+ "commit": "1052af761be163d8e41e415a1f117bb5d5dcfa18",
+ "ref": {
+  "val_acc": 0.8827,
+  "test_acc": 0.8796,
+  "content_hash": 1029824945594009414
+ },
+ "new": {
+  "val_acc": 0.8827,
+  "test_acc": 0.8796,
+  "content_hash": 1029824945594009414
+ },
+ "diff_val_pts": 0.0,
+ "diff_test_pts": 0.0,
+ "hash_same": true,
+ "m6_pass": true,
+ "steps": [
+  {
+   "cmd": "python -m src.data.download",
+   "rc": 0,
+   "seconds": 36
+  },
+  {
+   "cmd": "python -m src.data.prepare",
+   "rc": 0,
+   "seconds": 26
+  },
+  {
+   "cmd": "python -m src.train --config configs/gru.yaml --seed 42",
+   "rc": 0,
+   "seconds": 156
+  },
+  {
+   "cmd": "python -m src.evaluate --exp gru --seed 42 --split val",
+   "rc": 0,
+   "seconds": 7
+  },
+  {
+   "cmd": "python -m src.evaluate --exp gru --seed 42 --split test",
+   "rc": 0,
+   "seconds": 24
+  }
+ ],
+ "setup": "Kaggle Tesla T4, clone sạch nhánh feat/eval-explain, chạy đúng các lệnh README §4 (download → prepare → train gru seed 42 → evaluate val/test), 26/11/2026"
+}
