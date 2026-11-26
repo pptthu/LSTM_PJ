@@ -33,7 +33,7 @@ Theo [PURPOSE.md](PURPOSE.md) §4. Ghi số thật và file nguồn; trượt ch
 | M3 | Bảng so sánh với TF-IDF + LR, cùng split | Baseline 89,94% hơn GRU, McNemar có ý nghĩa | [experiments/README.md](experiments/README.md), `experiments/results/mcnemar.json` | ✅ |
 | M4 | Số liệu từng nhóm tình huống, ≥ 10 ví dụ sai/nhóm kèm giải thích | Có bảng 7 nhóm + ví dụ; **chưa điền cột giải thích** | `experiments/results/error_analysis/` | 🟨 |
 | M5 | Demo CPU < 1 giây/review, có tô màu từ | GRU: trung vị 60 ms, chậm nhất 199 ms (130 review, CPU Intel, đã gồm occlusion); chưa có ảnh chụp | `experiments/results/demo/latency.json` | ✅ (thiếu ảnh) |
-| M6 | 3 seed mean ± std; chạy lại lệch ≤ 1% | 3 seed, std ≤ 0,93 điểm; chưa chạy lại theo README trên máy khác | `experiments/results/<exp>/summary.json` | 🟨 |
+| M6 | 3 seed mean ± std; chạy lại lệch ≤ 1% | 3 seed, std ≤ 0,93 điểm; clone sạch + lệnh README trên Kaggle: GRU seed 42 ra **đúng** val 0,8827 / test 0,8796, cùng content_hash | `experiments/results/<exp>/summary.json`, `experiments/results/repro/m6_gru_seed42.json` | ✅ |
 
 ## 3. Yêu cầu đăng ký đề tài
 
