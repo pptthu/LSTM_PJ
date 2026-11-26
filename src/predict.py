@@ -26,7 +26,18 @@ from src.utils.paths import data_dir, experiment_dir
 def _find_best_checkpoint(ckpt_root: Path | None = None) -> tuple[Path, Path]:
     """Tự động chọn checkpoint `.pt` có `val_acc` cao nhất trong `experiments/checkpoints/`."""
     root = ckpt_root if ckpt_root is not None else experiment_dir("checkpoints")
-    pts = sorted(root.glob("*/seed_*/best.pt"))
+    # Ưu tiên mô hình chính tốt nhất theo mean val acc 3 seed (bỏ pilot_*, maxlen_*, chạy thử 1 seed)
+    try:
+        from src.eval.error_analysis import pick_best_exp
+
+        exp, seed = pick_best_exp(experiment_dir("results"))
+        pt = root / exp / f"seed_{seed}" / "best.pt"
+        if pt.exists() and (root / exp / "vocab.json").exists():
+            return pt, root / exp / "vocab.json"
+    except Exception:
+        pass
+    pts = sorted(p for p in root.glob("*/seed_*/best.pt")
+                 if not p.parents[1].name.startswith(("pilot_", "maxlen_")) and "_sample" not in p.parents[1].name)
     if not pts:
         raise FileNotFoundError(f"Chưa tìm thấy checkpoint 'best.pt' nào trong {root}")
 
@@ -195,9 +206,15 @@ class SentimentPredictor:
 _DEFAULT_PREDICTOR: Any = None
 
 
+_RNN_CACHE: dict[str, SentimentPredictor] = {}
+
+
 def get_default_predictor(device: str | None = "cpu") -> SentimentPredictor:
-    """Tải checkpoint tốt nhất có sẵn trong experiments/checkpoints."""
-    return SentimentPredictor(device=device)
+    """Tải checkpoint tốt nhất có sẵn trong experiments/checkpoints (nạp một lần rồi dùng lại)."""
+    key = str(device)
+    if key not in _RNN_CACHE:
+        _RNN_CACHE[key] = SentimentPredictor(device=device)
+    return _RNN_CACHE[key]
 
 
 def predict(text: str) -> tuple[int, float]:
@@ -236,6 +253,7 @@ def reset_default_predictor_cache() -> None:
     """Xoá cache predictor mặc định (hữu ích trong unit test)."""
     global _DEFAULT_PREDICTOR
     _DEFAULT_PREDICTOR = None
+    _RNN_CACHE.clear()
 
 
 def main() -> None:
