@@ -191,7 +191,7 @@ def manual_sample(df: pd.DataFrame, n: int = 50, seed: int = 42) -> pd.DataFrame
     cols = ["uid", "label", "pred", "prob", "rating", "n_tokens", "was_truncated", "contrast_end",
             "sarcasm_candidate", "text"]
     return pick[cols].assign(
-        manual_type="",  # mixed | sarcasm | negation | truncated_conclusion | label_noise | other
+        manual_type="",  # mixed | sarcasm | negation | truncated_conclusion | target_shift | label_noise | other
         note="",
     ).reset_index(drop=True)
 

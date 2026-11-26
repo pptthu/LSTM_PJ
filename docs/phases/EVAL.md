@@ -54,6 +54,21 @@
 6. (Mở rộng E4) đánh giá chéo Rotten Tomatoes với checkpoint có sẵn.
 7. Ghi giới hạn của mô hình và dữ liệu.
 
+## Quy ước gán nhãn lỗi (T2)
+
+Áp dụng cho `manual_type` (manual_label_50.csv) và nhãn trong ngoặc vuông ở `explanation` (error_examples.csv). Thống nhất sau bản duyệt độc lập 26/11 (`Discussion/pj/review_phan_tich_loi_IMDb_GRU.md`).
+
+| Nhãn | Chỉ gán khi |
+| :--- | :--- |
+| `truncated_conclusion` (cắt mất kết luận) | 400 token đầu **không có** câu đánh giá nào cùng chiều với nhãn, và câu quyết định nằm sau token 400 — vị trí đo bằng tokenizer của mô hình, không ước lượng. |
+| `label_noise` (nhiễu nhãn) | Review tự ghi điểm trái với nhãn (vd. "9.5/10" mà nhãn 1), hoặc nội dung một chiều hoàn toàn ngược với rating. Khen chê lẫn lộn thì gán `mixed`. |
+| `target_shift` (đổi đối tượng) | Lời khen/chê chủ yếu nhắm vào thứ khác bộ phim: phim khác, diễn viên, nhạc phim, rạp IMAX, game. |
+| `mixed` | Có cả khen và chê về chính bộ phim. |
+| `negation`, `sarcasm` | Lời đánh giá đi qua phủ định / mỉa mai mà mô hình đọc nghĩa đen. |
+| `other` | Không thuộc các nhãn trên (nhầm chủ đề với đánh giá, ít tín hiệu, OOV…). |
+
+Mọi trích dẫn tiếng Anh phải có nguyên văn trong `text`. Nguyên nhân gán bằng tay chỉ là **giả thuyết**; kiểm chứng bằng occlusion (`src/eval/explain.py`). error_examples.csv chọn theo nhóm khó nên **không** dùng để suy ra tỷ lệ lỗi chung; chỉ dùng manual_label_50.csv (mẫu ngẫu nhiên). Review trùng (`test_pos_12386` = `test_pos_7403`; `test_neg_10419`, `test_neg_7097` ở cả hai file) gộp khi đếm.
+
 ## Detailed plan / gotchas
 
 - Chọn checkpoint theo val, cố định trước khi xem test.
