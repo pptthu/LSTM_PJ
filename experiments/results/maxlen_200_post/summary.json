@@ -1,0 +1,37 @@
+{
+  "exp_name": "maxlen_200_post",
+  "n_seeds": 1,
+  "seeds": [
+    42
+  ],
+  "parameters": {
+    "total": 2588449,
+    "trainable": 2588449,
+    "embedding_trainable": true
+  },
+  "best_val_acc": {
+    "mean": 0.8471,
+    "std": 0.0,
+    "formatted": "84.71 ± 0.00%"
+  },
+  "val_loss_at_best": {
+    "mean": 0.3978,
+    "std": 0.0,
+    "formatted": "0.3978 ± 0.0000"
+  },
+  "val_f1_at_best": {
+    "mean": 0.847,
+    "std": 0.0,
+    "formatted": "84.70 ± 0.00%"
+  },
+  "train_acc_at_best": {
+    "mean": 0.9421,
+    "std": 0.0,
+    "formatted": "94.21 ± 0.00%"
+  },
+  "total_train_seconds": {
+    "mean": 88.83,
+    "std": 0.0,
+    "formatted": "88.8300 ± 0.0000"
+  }
+}

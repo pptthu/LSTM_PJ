@@ -1,0 +1,32 @@
+{
+ "rows": [
+  {
+   "max_len": 200,
+   "best_val_acc": 0.8302,
+   "best_epoch": 13,
+   "train_seconds": 162.2
+  },
+  {
+   "max_len": 250,
+   "best_val_acc": 0.8374,
+   "best_epoch": 10,
+   "train_seconds": 138.7
+  },
+  {
+   "max_len": 400,
+   "best_val_acc": 0.8601,
+   "best_epoch": 7,
+   "train_seconds": 128.5
+  },
+  {
+   "max_len": 600,
+   "best_val_acc": 0.8629,
+   "best_epoch": 9,
+   "train_seconds": 191.5
+  }
+ ],
+ "rule": "val acc cao nhất; chênh < 0.5 điểm thì chọn max_len nhỏ hơn",
+ "chosen_max_len": 400,
+ "max_epochs": 20,
+ "epoch_cap_ok": true
+}

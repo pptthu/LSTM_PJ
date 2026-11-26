@@ -1,0 +1,21 @@
+{
+  "exp_name": "bilstm_attention",
+  "seed": 2025,
+  "best_epoch": 3,
+  "stopped_epoch": 6,
+  "best_val_acc": 0.8763,
+  "total_train_seconds": 155.06,
+  "hardware": "Tesla T4",
+  "parameters": {
+    "total": 2768802,
+    "trainable": 2768802,
+    "embedding_trainable": true
+  },
+  "val_loss_at_best": 0.2918,
+  "val_f1_at_best": 0.8762,
+  "train_acc_at_best": 0.9118,
+  "train_loss_at_best": 0.2273,
+  "overfit_gap_at_best": 0.0355,
+  "min_val_loss_epoch": 3,
+  "min_val_loss": 0.2918
+}

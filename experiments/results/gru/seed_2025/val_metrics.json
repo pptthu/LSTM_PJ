@@ -1,0 +1,39 @@
+{
+  "split": "val",
+  "checkpoint": "/kaggle/tmp/LSTM_PJ/experiments/checkpoints/gru/seed_2025/best.pt",
+  "parameters": {
+    "total": 2588449,
+    "trainable": 2588449,
+    "embedding_trainable": true
+  },
+  "metrics": {
+    "accuracy": 0.8783,
+    "macro_f1": 0.8783,
+    "negative_class": {
+      "precision": 0.8739,
+      "recall": 0.8845,
+      "f1": 0.8792,
+      "support": 1238
+    },
+    "positive_class": {
+      "precision": 0.8828,
+      "recall": 0.8721,
+      "f1": 0.8774,
+      "support": 1235
+    },
+    "confusion_matrix": {
+      "tn": 1095,
+      "fp": 143,
+      "fn": 158,
+      "tp": 1077,
+      "total": 2473
+    },
+    "roc_auc": 0.9457
+  },
+  "speed": {
+    "total_seconds": 0.8054,
+    "latency_ms_per_sample": 0.326,
+    "latency_ms_per_batch": 20.65,
+    "samples_per_second": 3070.4
+  }
+}

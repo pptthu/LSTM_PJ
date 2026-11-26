@@ -1,0 +1,37 @@
+{
+  "exp_name": "pilot_lstm_ml200",
+  "n_seeds": 1,
+  "seeds": [
+    42
+  ],
+  "parameters": {
+    "total": 2617889,
+    "trainable": 2617889,
+    "embedding_trainable": true
+  },
+  "best_val_acc": {
+    "mean": 0.8302,
+    "std": 0.0,
+    "formatted": "83.02 ± 0.00%"
+  },
+  "val_loss_at_best": {
+    "mean": 0.6748,
+    "std": 0.0,
+    "formatted": "0.6748 ± 0.0000"
+  },
+  "val_f1_at_best": {
+    "mean": 0.8301,
+    "std": 0.0,
+    "formatted": "83.01 ± 0.00%"
+  },
+  "train_acc_at_best": {
+    "mean": 0.9691,
+    "std": 0.0,
+    "formatted": "96.91 ± 0.00%"
+  },
+  "total_train_seconds": {
+    "mean": 162.18,
+    "std": 0.0,
+    "formatted": "162.1800 ± 0.0000"
+  }
+}

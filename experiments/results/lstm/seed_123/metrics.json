@@ -1,0 +1,21 @@
+{
+  "exp_name": "lstm",
+  "seed": 123,
+  "best_epoch": 11,
+  "stopped_epoch": 14,
+  "best_val_acc": 0.8645,
+  "total_train_seconds": 180.46,
+  "hardware": "Tesla T4",
+  "parameters": {
+    "total": 2617889,
+    "trainable": 2617889,
+    "embedding_trainable": true
+  },
+  "val_loss_at_best": 0.4909,
+  "val_f1_at_best": 0.8645,
+  "train_acc_at_best": 0.9605,
+  "train_loss_at_best": 0.1169,
+  "overfit_gap_at_best": 0.096,
+  "min_val_loss_epoch": 7,
+  "min_val_loss": 0.3592
+}

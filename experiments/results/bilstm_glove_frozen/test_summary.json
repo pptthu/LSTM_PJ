@@ -1,0 +1,20 @@
+{
+  "exp_name": "bilstm_glove_frozen",
+  "split": "test",
+  "n_seeds": 3,
+  "accuracy": {
+    "mean": 0.8787,
+    "std": 0.0029
+  },
+  "macro_f1": {
+    "mean": 0.8787,
+    "std": 0.0028
+  },
+  "roc_auc": {
+    "mean": 0.9505
+  },
+  "total_params": 2735777,
+  "trainable_params": 235777,
+  "train_time_s_mean": 227.4,
+  "latency_ms_sample_mean": 0.379
+}

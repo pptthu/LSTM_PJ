@@ -1,0 +1,20 @@
+{
+  "exp_name": "lstm",
+  "split": "test",
+  "n_seeds": 3,
+  "accuracy": {
+    "mean": 0.8648,
+    "std": 0.0032
+  },
+  "macro_f1": {
+    "mean": 0.8648,
+    "std": 0.0032
+  },
+  "roc_auc": {
+    "mean": 0.9321
+  },
+  "total_params": 2617889,
+  "trainable_params": 2617889,
+  "train_time_s_mean": 162.7,
+  "latency_ms_sample_mean": 0.31
+}

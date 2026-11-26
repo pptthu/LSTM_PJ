@@ -11,7 +11,7 @@ model:
   freeze_embeddings: false
 
 data:
-  max_len: 250
+  max_len: 400
   batch_size: 64
   min_freq: 2
   max_vocab_size: 25000

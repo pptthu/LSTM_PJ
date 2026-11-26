@@ -1,0 +1,20 @@
+{
+  "exp_name": "bilstm_glove_ft",
+  "split": "test",
+  "n_seeds": 3,
+  "accuracy": {
+    "mean": 0.8672,
+    "std": 0.0034
+  },
+  "macro_f1": {
+    "mean": 0.867,
+    "std": 0.0035
+  },
+  "roc_auc": {
+    "mean": 0.9441
+  },
+  "total_params": 2735777,
+  "trainable_params": 2735777,
+  "train_time_s_mean": 109.5,
+  "latency_ms_sample_mean": 0.383
+}

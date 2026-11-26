@@ -1,0 +1,19 @@
+{
+  "model_a": "gru",
+  "model_b": "M0b_TFIDF_LR",
+  "better_model": "M0b_TFIDF_LR",
+  "contingency_table": {
+    "both_correct": 20967,
+    "a_correct_b_wrong": 1086,
+    "a_wrong_b_correct": 1519,
+    "both_wrong": 1428,
+    "total": 25000
+  },
+  "statistic": 71.6407,
+  "p_value": 0.0,
+  "exact_p_value": 2.1870463335151973e-17,
+  "chi2_p_value": 0.0,
+  "significant_p05": true,
+  "significant_p01": true,
+  "interpretation": "M0b_TFIDF_LR tốt hơn gru có ý nghĩa thống kê (p = 0.000000 < 0.05; đúng riêng 1519 so với 1086 mẫu)"
+}

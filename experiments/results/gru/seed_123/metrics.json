@@ -1,0 +1,21 @@
+{
+  "exp_name": "gru",
+  "seed": 123,
+  "best_epoch": 7,
+  "stopped_epoch": 10,
+  "best_val_acc": 0.8872,
+  "total_train_seconds": 127.3,
+  "hardware": "Tesla T4",
+  "parameters": {
+    "total": 2588449,
+    "trainable": 2588449,
+    "embedding_trainable": true
+  },
+  "val_loss_at_best": 0.3411,
+  "val_f1_at_best": 0.8872,
+  "train_acc_at_best": 0.9681,
+  "train_loss_at_best": 0.0961,
+  "overfit_gap_at_best": 0.0809,
+  "min_val_loss_epoch": 5,
+  "min_val_loss": 0.31
+}
